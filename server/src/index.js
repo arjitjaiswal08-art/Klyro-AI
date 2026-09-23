@@ -154,6 +154,10 @@ app.post('/api/chat/stream', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Klyro AI (Unica AI Backend) running on http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Klyro AI (Unica AI Backend) running on http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
