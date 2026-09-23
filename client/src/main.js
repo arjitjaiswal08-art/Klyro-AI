@@ -224,6 +224,7 @@ function createChatItemElement(chat) {
   item.addEventListener('click', (e) => {
     if (e.target.closest('.chat-action-btn')) return;
     switchChatSession(chat.id);
+    sidebar.classList.remove('open');
   });
 
   item.querySelector('.pin-btn').addEventListener('click', (e) => {
@@ -600,22 +601,25 @@ function toggleVoiceInput() {
 // 9. OS Switcher Tabs & Auto SaaS Generator
 // ==========================================
 function switchTab(tab) {
-  [tabBtnChat, tabBtnStudio, tabBtnMemory].forEach(b => b.classList.remove('active'));
+  [tabBtnChat, tabBtnStudio, tabBtnMemory].forEach(b => {
+    if (b) b.classList.toggle('active', b.dataset.tab === tab);
+  });
+
+  document.querySelectorAll('.sidebar-view-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
 
   if (tab === 'chat') {
-    tabBtnChat.classList.add('active');
     chatContainer.style.display = 'flex';
     inputAreaContainer.style.display = 'block';
     saasStudioView.style.display = 'none';
     memoryView.style.display = 'none';
   } else if (tab === 'studio') {
-    tabBtnStudio.classList.add('active');
     chatContainer.style.display = 'none';
     inputAreaContainer.style.display = 'none';
     saasStudioView.style.display = 'flex';
     memoryView.style.display = 'none';
   } else if (tab === 'memory') {
-    tabBtnMemory.classList.add('active');
     chatContainer.style.display = 'none';
     inputAreaContainer.style.display = 'none';
     saasStudioView.style.display = 'none';
@@ -729,6 +733,7 @@ function initEventListeners() {
     createNewChatSession();
     renderChatsList();
     renderActiveChat();
+    sidebar.classList.remove('open');
     promptInput.focus();
   });
 
@@ -776,11 +781,36 @@ function initEventListeners() {
   // Voice Dictation
   voiceMicBtn.addEventListener('click', toggleVoiceInput);
 
-  // Mobile sidebar
+  // Mobile sidebar & Backdrop
   openSidebarBtn.addEventListener('click', () => sidebar.classList.add('open'));
   closeSidebarBtn.addEventListener('click', () => sidebar.classList.remove('open'));
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  if (sidebarBackdrop) {
+    sidebarBackdrop.addEventListener('click', () => sidebar.classList.remove('open'));
+  }
 
-  // OS Switcher Tabs
+  // Mobile New Chat Button
+  const mobileNewChatBtn = document.getElementById('mobileNewChatBtn');
+  if (mobileNewChatBtn) {
+    mobileNewChatBtn.addEventListener('click', () => {
+      switchTab('chat');
+      createNewChatSession();
+      renderChatsList();
+      renderActiveChat();
+      sidebar.classList.remove('open');
+      promptInput.focus();
+    });
+  }
+
+  // Sidebar Views Navigator
+  document.querySelectorAll('.sidebar-view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchTab(btn.dataset.tab);
+      sidebar.classList.remove('open');
+    });
+  });
+
+  // OS Switcher Tabs (Desktop)
   tabBtnChat.addEventListener('click', () => switchTab('chat'));
   tabBtnStudio.addEventListener('click', () => switchTab('studio'));
   tabBtnMemory.addEventListener('click', () => switchTab('memory'));

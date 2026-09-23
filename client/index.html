@@ -102,6 +102,25 @@
         </div>
       </div>
 
+      <!-- Sidebar OS Navigation for Mobile & Quick Access -->
+      <div class="sidebar-section mobile-views-section">
+        <label class="section-label">STUDIO VIEWS</label>
+        <div class="sidebar-views-list">
+          <button class="sidebar-view-btn active" id="sideNavChat" data-tab="chat">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Chat OS</span>
+          </button>
+          <button class="sidebar-view-btn" id="sideNavStudio" data-tab="studio">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span>Auto SaaS Studio</span>
+          </button>
+          <button class="sidebar-view-btn" id="sideNavMemory" data-tab="memory">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>Saved Memory</span>
+          </button>
+        </div>
+      </div>
+
       <!-- Hidden Footer -->
       <div class="sidebar-footer" style="display: none;">
         <button class="settings-trigger-btn" id="openSettingsBtn">
@@ -110,6 +129,9 @@
         </button>
       </div>
     </aside>
+
+    <!-- Mobile Sidebar Backdrop -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <!-- Main Workspace -->
     <main class="main-content">
@@ -120,7 +142,7 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
 
-          <!-- OS Tabs Navigator -->
+          <!-- OS Tabs Navigator (Desktop) -->
           <div class="os-tabs-nav">
             <button class="os-tab-btn active" data-tab="chat" id="tabBtnChat">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
@@ -141,8 +163,15 @@
           </div>
         </div>
 
+        <!-- Mobile Minimal Brand Center (ChatGPT / Perplexity Style) -->
+        <div class="mobile-nav-center" id="mobileNavCenter">
+          <span class="mobile-nav-spark">✦</span>
+          <span class="mobile-nav-brand">Klyro AI</span>
+          <span class="mobile-nav-badge">3.5</span>
+        </div>
+
         <div class="topbar-right">
-          <!-- Adaptive Level Selector -->
+          <!-- Adaptive Level Selector (Desktop) -->
           <div class="level-control" title="Choose response depth (Unica AI adaptive intelligence)">
             <span class="level-label">Depth:</span>
             <div class="level-buttons">
@@ -157,6 +186,14 @@
               </button>
             </div>
           </div>
+
+          <!-- Mobile New Chat Button (ChatGPT / Perplexity Style) -->
+          <button class="icon-btn mobile-new-chat-btn" id="mobileNewChatBtn" title="New Chat">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
 
           <!-- Hidden Settings Trigger -->
           <button class="icon-btn" id="topbarSettingsBtn" style="display: none;"></button>
