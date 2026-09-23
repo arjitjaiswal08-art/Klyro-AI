@@ -1427,15 +1427,21 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Mobile Responsiveness */
+/* ==========================================================================
+   MOBILE RESPONSIVENESS (< 768px and < 480px)
+   ========================================================================== */
+
 @media (max-width: 768px) {
+  /* Sidebar */
   .sidebar {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
+    width: 285px;
     transform: translateX(-100%);
-    box-shadow: var(--shadow-card);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.85);
+    z-index: 1000;
   }
 
   .sidebar.open {
@@ -1448,9 +1454,307 @@ body {
 
   .mobile-menu-btn {
     display: flex;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+  }
+
+  /* Topbar */
+  .topbar {
+    height: 52px;
+    padding: 0 10px;
+    gap: 8px;
+  }
+
+  .topbar-left {
+    gap: 8px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  .chat-meta {
+    display: none; /* Hide chat title in topbar on mobile to prioritize tabs */
+  }
+
+  /* Compact OS Tabs in Navbar */
+  .os-tabs-nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding: 2px;
+    gap: 2px;
+    flex-shrink: 1;
+  }
+
+  .os-tabs-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .os-tab-btn {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    gap: 4px;
+    white-space: nowrap;
+    border-radius: var(--radius-xs);
+  }
+
+  .os-tab-btn svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .topbar-right {
+    gap: 6px;
+  }
+
+  .level-label {
+    display: none;
+  }
+
+  .level-control {
+    padding: 2px 4px;
+  }
+
+  .level-btn {
+    padding: 3px 6px;
+    font-size: 0.68rem;
+  }
+
+  /* Chat Container */
+  .chat-container {
+    padding: 12px 10px 24px 10px;
+    gap: 16px;
+  }
+
+  /* Welcome Hero on Mobile */
+  .welcome-hero {
+    padding: 8px 0 16px 0;
+  }
+
+  .hero-pill {
+    padding: 4px 12px;
+    font-size: 0.68rem;
+    margin-bottom: 12px;
+  }
+
+  .hero-title {
+    font-size: 1.55rem;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .hero-subtitle {
+    font-size: 0.82rem;
+    margin-bottom: 20px;
+    line-height: 1.4;
   }
 
   .starter-cards {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .starter-card {
+    padding: 12px 14px;
+  }
+
+  .starter-card h4 {
+    font-size: 0.88rem;
+    margin-bottom: 3px;
+  }
+
+  .starter-card p {
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  /* Messages & Markdown */
+  .message-row {
+    gap: 10px;
+  }
+
+  .assistant-avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+    border-radius: var(--radius-xs);
+  }
+
+  .message-bubble {
+    max-width: 92%;
+  }
+
+  .message-row.user .message-bubble {
+    padding: 10px 14px;
+    font-size: 0.86rem;
+  }
+
+  .message-row.assistant .message-bubble {
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+  }
+
+  .message-header {
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+  }
+
+  .markdown-body {
+    font-size: 0.86rem;
+    line-height: 1.55;
+  }
+
+  .markdown-body h1 { font-size: 1.2rem; }
+  .markdown-body h2 { font-size: 1.08rem; }
+  .markdown-body h3 { font-size: 0.98rem; }
+  .markdown-body h4 { font-size: 0.9rem; }
+
+  .markdown-body code:not(pre code) {
+    font-size: 0.78rem;
+    padding: 1px 4px;
+    word-break: break-word;
+  }
+
+  .code-block-wrapper {
+    margin: 10px 0;
+    border-radius: var(--radius-sm);
+  }
+
+  .code-block-header {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+
+  .code-block-wrapper pre {
+    padding: 10px;
+    font-size: 0.76rem;
+  }
+
+  /* Command Center & Bottom Input on Mobile */
+  .input-area {
+    padding: 0 10px 10px 10px;
+  }
+
+  .input-wrapper {
+    padding: 8px 10px;
+    border-radius: var(--radius-md);
+  }
+
+  .input-mode-strip {
+    margin-bottom: 4px;
+    padding-bottom: 6px;
+    gap: 4px;
+    scrollbar-width: none;
+  }
+
+  .input-mode-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .strip-label {
+    display: none; /* Hide label on mobile to save horizontal space */
+  }
+
+  .mode-tag-btn {
+    padding: 2px 7px;
+    font-size: 0.68rem;
+  }
+
+  .prompt-textarea {
+    font-size: 0.88rem;
+    min-height: 22px;
+    max-height: 110px;
+    padding: 4px 0;
+  }
+
+  .input-actions-strip {
+    gap: 4px;
+  }
+
+  .tool-icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .tool-icon-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .send-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+  }
+
+  .send-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .input-footer-info {
+    display: none; /* Hide disclaimer on mobile to reclaim vital vertical space */
+  }
+
+  .slash-commands-menu {
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: 100%;
+  }
+
+  /* Auto SaaS Studio on Mobile */
+  .studio-container {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .studio-title {
+    font-size: 1.5rem;
+  }
+
+  .studio-subtitle {
+    font-size: 0.82rem;
+  }
+
+  .saas-generator-box {
+    padding: 16px;
+    border-radius: var(--radius-lg);
+  }
+
+  .saas-input-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .saas-generate-btn {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .saas-results-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .saas-result-card {
+    padding: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Ultra-compact screens <= 480px */
+  .topbar {
+    padding: 0 8px;
+  }
+
+  .os-tab-btn {
+    padding: 3px 6px;
+    font-size: 0.68rem;
+  }
+
+  .message-bubble {
+    max-width: 96%;
   }
 }
