@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment variables & secrets (CRITICAL: Do not commit!)
+.env
+.env.local
+*.env
+
+# Production build outputs
+dist/
+*/dist/
+
+# Logs & temporary files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db

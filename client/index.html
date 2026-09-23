@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Klyro AI — AI Operating System</title>
+  <meta name="description" content="Klyro AI is an intelligent AI Operating System powered by the Unica AI engine and Google Gemini, designed for building apps, problem-solving, and scalable SaaS strategy.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/atom-one-dark.min.css">
+</head>
+<body>
+  <div class="app-layout" id="app" data-theme="general">
+    <!-- Ambient Animated Mesh -->
+    <div class="ambient-mesh"></div>
+
+    <!-- Smart Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <h2>Klyro AI</h2>
+            <span class="brand-tagline">Build, Think, Scale Faster</span>
+          </div>
+        </div>
+        <button class="icon-btn close-sidebar-btn" id="closeSidebarBtn" title="Close Sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <button class="new-chat-btn" id="newChatBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        <span>New Discussion</span>
+      </button>
+
+      <!-- Sidebar Search -->
+      <div class="sidebar-search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="sidebarSearchInput" placeholder="Search chats..." autocomplete="off" />
+      </div>
+
+      <!-- AI Modes Selector -->
+      <div class="sidebar-section">
+        <label class="section-label">
+          <span>AI MODES</span>
+          <span style="font-size:0.62rem;opacity:0.6;">THEME MORPH</span>
+        </label>
+        <div class="mode-pills" id="sidebarModePills">
+          <button class="mode-pill active" data-mode="general">
+            <div class="mode-pill-left">
+              <span>✦</span>
+              <span>General Assistant</span>
+            </div>
+            <span class="mode-badge-tag">Aurora</span>
+          </button>
+          <button class="mode-pill" data-mode="problem-solving">
+            <div class="mode-pill-left">
+              <span>⚙️</span>
+              <span>Problem Solving</span>
+            </div>
+            <span class="mode-badge-tag">Cyber</span>
+          </button>
+          <button class="mode-pill" data-mode="tech-assist">
+            <div class="mode-pill-left">
+              <span>🚀</span>
+              <span>Tech & Code</span>
+            </div>
+            <span class="mode-badge-tag">Violet</span>
+          </button>
+          <button class="mode-pill" data-mode="business">
+            <div class="mode-pill-left">
+              <span>💡</span>
+              <span>Business & SaaS</span>
+            </div>
+            <span class="mode-badge-tag">Gold</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Smart Chats Scroll Area -->
+      <div class="chats-scroll-area">
+        <!-- Pinned Chats -->
+        <div class="pinned-chats-group" id="pinnedChatsSection" style="display: none;">
+          <label class="section-label">📌 PINNED</label>
+          <div id="pinnedChatsList"></div>
+        </div>
+
+        <!-- Recent Chats -->
+        <div class="recent-chats-group">
+          <div class="chats-section-header">
+            <label class="section-label">RECENT DISCUSSIONS</label>
+            <button class="text-btn" id="clearAllChatsBtn">Clear All</button>
+          </div>
+          <div id="chatsList"></div>
+        </div>
+      </div>
+
+      <!-- Hidden Footer -->
+      <div class="sidebar-footer" style="display: none;">
+        <button class="settings-trigger-btn" id="openSettingsBtn">
+          <span>Gemini Settings</span>
+          <span class="status-indicator-dot" id="globalStatusDot"></span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="main-content">
+      <!-- Top Navbar with OS Tabs -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn mobile-menu-btn" id="openSidebarBtn" title="Toggle Sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+
+          <!-- OS Tabs Navigator -->
+          <div class="os-tabs-nav">
+            <button class="os-tab-btn active" data-tab="chat" id="tabBtnChat">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <span>Chat OS</span>
+            </button>
+            <button class="os-tab-btn" data-tab="studio" id="tabBtnStudio">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span>Auto SaaS Studio</span>
+            </button>
+            <button class="os-tab-btn" data-tab="memory" id="tabBtnMemory">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span>Saved Memory</span>
+            </button>
+          </div>
+
+          <div class="chat-meta">
+            <span class="chat-title" id="activeChatTitle">New Discussion</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Adaptive Level Selector -->
+          <div class="level-control" title="Choose response depth (Unica AI adaptive intelligence)">
+            <span class="level-label">Depth:</span>
+            <div class="level-buttons">
+              <button class="level-btn" data-level="beginner" id="btnLevelBeginner">
+                <span class="dot dot-green"></span> Beginner
+              </button>
+              <button class="level-btn active" data-level="intermediate" id="btnLevelIntermediate">
+                <span class="dot dot-yellow"></span> Intermediate
+              </button>
+              <button class="level-btn" data-level="advanced" id="btnLevelAdvanced">
+                <span class="dot dot-purple"></span> Advanced
+              </button>
+            </div>
+          </div>
+
+          <!-- Hidden Settings Trigger -->
+          <button class="icon-btn" id="topbarSettingsBtn" style="display: none;"></button>
+        </div>
+      </header>
+
+      <!-- View 1: Main Chat OS Container -->
+      <div class="chat-container" id="chatContainer">
+        <!-- Empty State Hero -->
+        <div class="welcome-hero" id="welcomeHero">
+          <div class="hero-pill">
+            <span class="pulse-core"></span>
+            <span>Klyro AI • Powered by Unica Engine</span>
+          </div>
+          <h1 class="hero-title">What are we building today?</h1>
+          <p class="hero-subtitle">
+            An intelligent AI Operating System designed for live problem solving, production code engineering, and scalable SaaS generation.
+          </p>
+
+          <!-- Alive Hover Action Cards -->
+          <div class="starter-cards">
+            <button class="starter-card" data-prompt="How to build an AI SaaS application from scratch?" data-mode="problem-solving">
+              <div class="starter-header">
+                <span class="card-icon">⚙️</span>
+                <span class="card-badge">Problem-Solving</span>
+              </div>
+              <h4>Build an AI SaaS</h4>
+              <p>Step-by-step architecture, tech stack, database schema, and modular MVP plan.</p>
+            </button>
+
+            <button class="starter-card" data-prompt="Write a production Node.js Express rate limiting and authentication middleware" data-mode="tech-assist">
+              <div class="starter-header">
+                <span class="card-icon">🚀</span>
+                <span class="card-badge">Tech Assist</span>
+              </div>
+              <h4>Production Auth Middleware</h4>
+              <p>Clean, tested Node.js/Express implementation with zero fluff.</p>
+            </button>
+
+            <button class="starter-card" data-prompt="Give me 3 profitable micro-SaaS ideas with high margins for 2026" data-mode="business">
+              <div class="starter-header">
+                <span class="card-icon">💡</span>
+                <span class="card-badge">Business & Startup</span>
+              </div>
+              <h4>High-Margin SaaS Ideas</h4>
+              <p>Practical validation plans, distribution channels, and unit economics.</p>
+            </button>
+
+            <button class="starter-card" data-prompt="How to implement real-time streaming LLM responses in JavaScript with Server-Sent Events?" data-mode="problem-solving">
+              <div class="starter-header">
+                <span class="card-icon">⚡</span>
+                <span class="card-badge">Full-Stack</span>
+              </div>
+              <h4>Streaming LLM Responses</h4>
+              <p>Fetch API ReadableStream handler with chunk decoding and auto-scroll.</p>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Messages Flow -->
+        <div class="messages-list" id="messagesList"></div>
+
+        <!-- Typing Indicator -->
+        <div class="typing-indicator" id="typingIndicator" style="display: none;">
+          <div class="assistant-avatar">✦</div>
+          <div class="typing-bubble">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <span class="typing-text">Unica AI is reasoning...</span>
+        </div>
+      </div>
+
+      <!-- View 2: Auto SaaS Studio (Flagship WOW Feature) -->
+      <div class="studio-container" id="saasStudioView" style="display: none;">
+        <div class="studio-hero">
+          <h2 class="studio-title">⚡ Auto SaaS Generator</h2>
+          <p class="studio-subtitle">Enter any niche, audience, or problem to generate an entire MVP blueprint with pitch, revenue model, tech stack, and ready-to-run code.</p>
+        </div>
+
+        <div class="saas-generator-box">
+          <div class="saas-input-row">
+            <input
+              type="text"
+              class="saas-niche-input"
+              id="saasNicheInput"
+              placeholder="e.g. AI Copilot for Real Estate, Invoicing Tool for Freelancers, Micro-SaaS for Dentists..."
+            />
+            <button class="saas-generate-btn" id="generateSaasBtn">Generate Blueprint 🚀</button>
+          </div>
+
+          <div class="saas-results-grid" id="saasResultsGrid" style="display: none;">
+            <div class="saas-result-card">
+              <h4>🎯 Problem & Value Proposition</h4>
+              <p id="saasProblemText">Analyzing target pain points and recurring workflow bottlenecks...</p>
+            </div>
+            <div class="saas-result-card">
+              <h4>💰 Monetization & Unit Economics</h4>
+              <ul id="saasPricingList">
+                <li>Tier 1: $19/mo (Solo)</li>
+                <li>Tier 2: $79/mo (Pro/Teams)</li>
+              </ul>
+            </div>
+            <div class="saas-result-card">
+              <h4>🛠️ Recommended Tech Stack</h4>
+              <p id="saasTechStackText">Next.js 15, TailwindCSS, Supabase Auth + Postgres, Stripe, Gemini 3.5 API.</p>
+            </div>
+            <div class="saas-result-card">
+              <h4>⚡ Speed-to-MVP Timeline</h4>
+              <p id="saasTimelineText">Week 1: Core API & DB • Week 2: Auth & UI • Week 3: Stripe & Launch.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View 3: Saved Memory & Projects -->
+      <div class="studio-container" id="memoryView" style="display: none;">
+        <div class="studio-hero">
+          <h2 class="studio-title">🧬 Saved Memory & Context</h2>
+          <p class="studio-subtitle">Your persistent project memory, saved technical guidelines, and active workspace preferences.</p>
+        </div>
+        <div class="saas-generator-box">
+          <div class="saas-results-grid">
+            <div class="saas-result-card">
+              <h4>📁 Active Workspace</h4>
+              <p>Project: <strong>Klyro AI</strong> (Full-Stack Engine)</p>
+              <p style="margin-top:6px;">Assistant: <strong>Unica AI Master Orchestrator</strong></p>
+            </div>
+            <div class="saas-result-card">
+              <h4>⚡ Connected Engine</h4>
+              <p>Model: <strong>gemini-3.5-flash-lite</strong></p>
+              <p style="margin-top:6px;">Status: <strong>Online & Streaming Enabled</strong></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Command Center Input Area -->
+      <footer class="input-area" id="inputAreaContainer">
+        <div class="input-wrapper">
+          <!-- Slash Commands Popup Menu -->
+          <div class="slash-commands-menu" id="slashMenu" style="display: none;">
+            <button class="slash-cmd-item" data-cmd="/code">
+              <span class="slash-cmd-prefix">/code</span>
+              <span class="slash-cmd-desc">Write clean, production-grade code</span>
+            </button>
+            <button class="slash-cmd-item" data-cmd="/startup">
+              <span class="slash-cmd-prefix">/startup</span>
+              <span class="slash-cmd-desc">Validate SaaS idea & revenue plan</span>
+            </button>
+            <button class="slash-cmd-item" data-cmd="/debug">
+              <span class="slash-cmd-prefix">/debug</span>
+              <span class="slash-cmd-desc">Troubleshoot and fix code issues</span>
+            </button>
+            <button class="slash-cmd-item" data-cmd="/saas">
+              <span class="slash-cmd-prefix">/saas</span>
+              <span class="slash-cmd-desc">Open Auto SaaS Blueprint Studio</span>
+            </button>
+            <button class="slash-cmd-item" data-cmd="/clear">
+              <span class="slash-cmd-prefix">/clear</span>
+              <span class="slash-cmd-desc">Start a fresh conversation</span>
+            </button>
+          </div>
+
+          <!-- Attached File Chip Container -->
+          <div id="filePreviewContainer" style="display: none;">
+            <div class="file-attachment-chip">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <span id="attachedFileName">code.js</span>
+              <button class="remove-file-btn" id="removeFileBtn" title="Remove attached file">&times;</button>
+            </div>
+          </div>
+
+          <!-- Active Mode Selector Strip -->
+          <div class="input-mode-strip">
+            <span class="strip-label">Mode:</span>
+            <button class="mode-tag-btn active" data-mode="general">✦ All-Rounder</button>
+            <button class="mode-tag-btn" data-mode="problem-solving">⚙️ Problem-Solving</button>
+            <button class="mode-tag-btn" data-mode="tech-assist">🚀 Tech Assist</button>
+            <button class="mode-tag-btn" data-mode="business">💡 Business</button>
+          </div>
+
+          <!-- Prompt Form -->
+          <form class="prompt-form" id="promptForm" onsubmit="return false;">
+            <textarea
+              id="promptInput"
+              class="prompt-textarea"
+              placeholder="Ask Unica AI anything... Type '/' for command center"
+              rows="1"
+              required
+            ></textarea>
+
+            <div class="input-actions-strip">
+              <!-- Hidden File Input -->
+              <input type="file" id="fileInput" style="display: none;" accept=".js,.ts,.py,.json,.txt,.md,.html,.css" />
+
+              <!-- File Upload Trigger -->
+              <button type="button" class="tool-icon-btn" id="fileUploadBtn" title="Attach file or code (or drag & drop)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+              </button>
+
+              <!-- Voice Dictation -->
+              <button type="button" class="tool-icon-btn" id="voiceMicBtn" title="Voice dictation">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+              </button>
+
+              <!-- Send Button -->
+              <button type="submit" class="send-btn" id="sendBtn" title="Send Message">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </div>
+          </form>
+
+          <div class="input-footer-info">
+            <span class="info-text">Unica AI adheres to strict clarity, contextual memory, and structured execution.</span>
+            <span class="key-hint" id="keyStatusHint" style="display: none;"></span>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Hidden Settings Modal -->
+    <div class="modal-backdrop" id="settingsModal" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>Gemini & Engine Settings</h3>
+          <button class="icon-btn" id="closeSettingsBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="password" id="apiKeyInput" />
+          <button id="toggleKeyVisibilityBtn"></button>
+          <select id="modelSelect"></select>
+          <span id="modalStatusValue"></span>
+        </div>
+        <div class="modal-footer">
+          <button id="cancelSettingsBtn"></button>
+          <button id="saveKeyBtn"></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toastNotification" style="display: none;"></div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
