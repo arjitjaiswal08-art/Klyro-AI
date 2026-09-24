@@ -406,12 +406,67 @@ function initSpotlight() {
 // ==========================================
 // 2. Storage & Session Management
 // ==========================================
+const DEFAULT_STARTER_CHATS = [
+  {
+    id: 'chat_pinned_1',
+    title: 'Viva Preparation EDA',
+    isPinned: true,
+    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+    messages: [
+      { role: 'user', content: 'Viva preparation for Exploratory Data Analysis' },
+      { role: 'assistant', content: 'Key areas for EDA Viva:\n1. Missing value imputation (Mean/Median vs KNN)\n2. Outlier treatment (IQR vs Z-score)\n3. Correlation matrices & skewness transformation' }
+    ]
+  },
+  {
+    id: 'chat_pinned_2',
+    title: 'Code Explanation and System Architecture',
+    isPinned: true,
+    createdAt: new Date(Date.now() - 3600000 * 5).toISOString(),
+    messages: [
+      { role: 'user', content: 'Explain system architecture' },
+      { role: 'assistant', content: 'The system uses an asynchronous decoupled event engine with live streaming, token estimation, and intelligent multi-mode routing.' }
+    ]
+  },
+  {
+    id: 'chat_pinned_3',
+    title: 'Viva Preparation for MCQ & Core Models',
+    isPinned: true,
+    createdAt: new Date(Date.now() - 3600000 * 8).toISOString(),
+    messages: [
+      { role: 'user', content: 'Viva preparation for MCQs' },
+      { role: 'assistant', content: 'Focus on precision, recall, F1 score, confusion matrices, and model bias-variance tradeoff.' }
+    ]
+  },
+  {
+    id: 'chat_recent_1',
+    title: 'Build AI Master Prompt',
+    isPinned: false,
+    createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
+    messages: [
+      { role: 'user', content: 'Build AI Master Prompt' },
+      { role: 'assistant', content: 'Essential Master Prompt sections: Persona, Context, Goal, Constraints, Reasoning Step, and Output Format.' }
+    ]
+  },
+  {
+    id: 'chat_recent_2',
+    title: 'Suggest UI Upgrades',
+    isPinned: false,
+    createdAt: new Date(Date.now() - 3600000 * 48).toISOString(),
+    messages: [
+      { role: 'user', content: 'Suggest UI Upgrades for mobile users' },
+      { role: 'assistant', content: 'Floating circular buttons, bottom capsule dock, dynamic waveform/send arrow toggle, and drawer navigation matching ChatGPT mobile app.' }
+    ]
+  }
+];
+
 function loadChatsFromStorage() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_CHATS);
-    return raw ? JSON.parse(raw) : [];
+    if (!raw) return DEFAULT_STARTER_CHATS;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : DEFAULT_STARTER_CHATS;
   } catch (e) {
-    return [];
+    return DEFAULT_STARTER_CHATS;
   }
 }
 
@@ -458,7 +513,7 @@ function renderChatsList() {
 
   // Pinned Section
   if (pinned.length > 0) {
-    pinnedChatsSection.style.display = 'flex';
+    pinnedChatsSection.style.display = 'block';
     pinnedChatsList.innerHTML = '';
     pinned.forEach(chat => {
       pinnedChatsList.appendChild(createChatItemElement(chat));
@@ -484,7 +539,9 @@ function createChatItemElement(chat) {
   item.className = `chat-item ${chat.id === activeChatId ? 'active' : ''}`;
   item.innerHTML = `
     <div class="chat-item-main">
-      <span style="font-size:0.85rem;opacity:0.7;">💬</span>
+      <svg class="chat-item-bubble-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
       <span class="chat-item-title">${escapeHtml(chat.title)}</span>
     </div>
     <div class="chat-item-actions">
@@ -887,6 +944,9 @@ async function handleUserSubmit() {
   promptInput.value = '';
   promptInput.style.height = 'auto';
   closeSlashMenu();
+  if (typeof updateSendButtonVisual === 'function') {
+    updateSendButtonVisual();
+  }
 
   // Create empty assistant response row in DOM for streaming
   const assistantRow = document.createElement('div');
@@ -1663,10 +1723,29 @@ function initEventListeners() {
     handleUserSubmit();
   });
 
+  // Dynamic Send Button Visual (Waveform vs Send Arrow)
+  window.updateSendButtonVisual = function() {
+    const text = (promptInput.value || '').trim();
+    const waveformSvg = sendBtn ? sendBtn.querySelector('.waveform-svg') : null;
+    const sendArrowSvg = sendBtn ? sendBtn.querySelector('.send-arrow-svg') : null;
+    if (waveformSvg && sendArrowSvg) {
+      if (text.length > 0) {
+        waveformSvg.style.display = 'none';
+        sendArrowSvg.style.display = 'block';
+        sendBtn.classList.add('ready-to-send');
+      } else {
+        waveformSvg.style.display = 'block';
+        sendArrowSvg.style.display = 'none';
+        sendBtn.classList.remove('ready-to-send');
+      }
+    }
+  };
+
   // Prompt input handling & Slash Menu triggers
   promptInput.addEventListener('input', () => {
     promptInput.style.height = 'auto';
     promptInput.style.height = Math.min(promptInput.scrollHeight, 180) + 'px';
+    if (window.updateSendButtonVisual) window.updateSendButtonVisual();
 
     const val = promptInput.value;
     if (val === '/' || val.startsWith('/')) {
@@ -1795,7 +1874,7 @@ function initEventListeners() {
     sidebarBackdrop.addEventListener('click', () => sidebar.classList.remove('open'));
   }
 
-  // Mobile New Chat Button
+  // Mobile New Chat Button [ 💭 ]
   const mobileNewChatBtn = document.getElementById('mobileNewChatBtn');
   if (mobileNewChatBtn) {
     mobileNewChatBtn.addEventListener('click', () => {
@@ -1807,6 +1886,77 @@ function initEventListeners() {
       promptInput.focus();
     });
   }
+
+  // Mobile Drawer Chat Pill Button [ ✏️ Chat ]
+  const drawerChatPillBtn = document.getElementById('drawerChatPillBtn');
+  if (drawerChatPillBtn) {
+    drawerChatPillBtn.addEventListener('click', () => {
+      switchTab('chat');
+      createNewChatSession();
+      renderChatsList();
+      renderActiveChat();
+      sidebar.classList.remove('open');
+      promptInput.focus();
+    });
+  }
+
+  // Mobile Drawer Search Circle Button [ 🔍 ]
+  const drawerSearchBtn = document.getElementById('drawerSearchBtn');
+  if (drawerSearchBtn) {
+    drawerSearchBtn.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      openCommandPalette();
+    });
+  }
+
+  // Mobile Drawer Quick Nav Items
+  const drawerNavImages = document.getElementById('drawerNavImages');
+  if (drawerNavImages) {
+    drawerNavImages.addEventListener('click', () => {
+      switchTab('chat');
+      sidebar.classList.remove('open');
+      promptInput.value = '/image ';
+      promptInput.focus();
+      if (window.updateSendButtonVisual) window.updateSendButtonVisual();
+    });
+  }
+  const drawerNavLibrary = document.getElementById('drawerNavLibrary');
+  if (drawerNavLibrary) {
+    drawerNavLibrary.addEventListener('click', () => {
+      switchTab('studio');
+      sidebar.classList.remove('open');
+    });
+  }
+  const drawerNavProjects = document.getElementById('drawerNavProjects');
+  if (drawerNavProjects) {
+    drawerNavProjects.addEventListener('click', () => {
+      switchTab('dashboard');
+      sidebar.classList.remove('open');
+    });
+  }
+  const drawerNavScheduled = document.getElementById('drawerNavScheduled');
+  if (drawerNavScheduled) {
+    drawerNavScheduled.addEventListener('click', () => {
+      switchTab('editor');
+      sidebar.classList.remove('open');
+    });
+  }
+  const drawerNavPlugins = document.getElementById('drawerNavPlugins');
+  if (drawerNavPlugins) {
+    drawerNavPlugins.addEventListener('click', () => {
+      switchTab('memory');
+      sidebar.classList.remove('open');
+    });
+  }
+
+  // Dynamic Send/Voice Button Click
+  sendBtn.addEventListener('click', (e) => {
+    const text = (promptInput.value || '').trim();
+    if (!text && window.innerWidth <= 768) {
+      e.preventDefault();
+      toggleVoiceInput();
+    }
+  });
 
   // Sidebar Views Navigator
   document.querySelectorAll('.sidebar-view-btn').forEach(btn => {

@@ -18,7 +18,7 @@
 
     <!-- Smart Sidebar -->
     <aside class="sidebar" id="sidebar">
-      <!-- Clean Sidebar Header -->
+      <!-- Clean Sidebar Header (ChatGPT Mobile App Style) -->
       <div class="sidebar-header">
         <div class="brand">
           <div class="brand-icon">
@@ -35,23 +35,82 @@
             </svg>
           </div>
           <div class="brand-text">
-            <h2>Klyro AI</h2>
-            <span class="brand-tagline">Cursor & SaaS Engine</span>
+            <h2 class="drawer-app-title">ChatGPT</h2>
+            <span class="brand-tagline">Klyro AI Engine</span>
           </div>
         </div>
-        <button class="icon-btn close-sidebar-btn" id="closeSidebarBtn" title="Close Sidebar">
+        <button class="drawer-search-circle-btn" id="drawerSearchBtn" title="Search discussions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+        <button class="icon-btn close-sidebar-btn" id="closeSidebarBtn" title="Close Sidebar" style="display: none;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
         </button>
       </div>
 
-      <!-- New Chat Button -->
-      <button class="new-chat-btn" id="newChatBtn">
+      <!-- Quick Nav List Items (ChatGPT App Style: Images, Library, Projects, Scheduled, Plugins) -->
+      <div class="drawer-menu-list">
+        <button class="drawer-menu-item" data-tab="chat" data-action="image" id="drawerNavImages">
+          <div class="drawer-item-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+          </div>
+          <span>Images</span>
+        </button>
+
+        <button class="drawer-menu-item" data-tab="studio" id="drawerNavLibrary">
+          <div class="drawer-item-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </div>
+          <span>Library</span>
+        </button>
+
+        <button class="drawer-menu-item" data-tab="dashboard" id="drawerNavProjects">
+          <div class="drawer-item-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+          </div>
+          <span>Projects</span>
+        </button>
+
+        <button class="drawer-menu-item" data-tab="editor" id="drawerNavScheduled">
+          <div class="drawer-item-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <span>Scheduled</span>
+        </button>
+
+        <button class="drawer-menu-item" data-tab="memory" id="drawerNavPlugins">
+          <div class="drawer-item-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </div>
+          <span>Plugins</span>
+        </button>
+      </div>
+
+      <!-- Desktop New Chat Button -->
+      <button class="new-chat-btn desktop-only-btn" id="newChatBtn">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
         <span>New Discussion</span>
       </button>
 
-      <!-- Sidebar Search -->
-      <div class="sidebar-search-box">
+      <!-- Sidebar Search (Desktop) -->
+      <div class="sidebar-search-box desktop-only-search">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="sidebarSearchInput" placeholder="Search chats..." autocomplete="off" />
       </div>
@@ -75,57 +134,36 @@
         </div>
       </div>
 
-      <!-- Smart Chats Scroll Area -->
+      <!-- Smart Chats Scroll Area (Screenshot 1: Pinned and Recents) -->
       <div class="chats-scroll-area">
         <!-- Pinned Chats -->
         <div class="pinned-chats-group" id="pinnedChatsSection" style="display: none;">
-          <label class="section-label">📌 PINNED</label>
+          <label class="section-label">Pinned</label>
           <div id="pinnedChatsList"></div>
         </div>
 
         <!-- Recent Chats -->
         <div class="recent-chats-group">
           <div class="chats-section-header">
-            <label class="section-label">RECENT DISCUSSIONS</label>
+            <label class="section-label">Recents</label>
             <button class="ghost-clean-btn" id="clearAllChatsBtn" title="Clear all conversation history">Clear All</button>
           </div>
           <div id="chatsList"></div>
         </div>
       </div>
 
-      <!-- Sidebar OS Navigation for Mobile & Quick Access -->
-      <div class="sidebar-section mobile-views-section">
-        <label class="section-label">STUDIO VIEWS</label>
-        <div class="sidebar-views-list">
-          <button class="sidebar-view-btn active" id="sideNavChat" data-tab="chat">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            <span>Chat OS</span>
-          </button>
-          <button class="sidebar-view-btn" id="sideNavEditor" data-tab="editor">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-            <span>Cursor IDE</span>
-          </button>
-          <button class="sidebar-view-btn" id="sideNavStudio" data-tab="studio">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-            <span>Auto SaaS Studio</span>
-          </button>
-          <button class="sidebar-view-btn" id="sideNavDashboard" data-tab="dashboard">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-            <span>Projects & Tools</span>
-          </button>
-          <button class="sidebar-view-btn" id="sideNavMemory" data-tab="memory">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span>Saved Memory</span>
-          </button>
-        </div>
-      </div>
-
-      <!-- Hidden Footer -->
-      <div class="sidebar-footer" style="display: none;">
-        <button class="settings-trigger-btn" id="openSettingsBtn">
-          <span>Gemini Settings</span>
-          <span class="status-indicator-dot" id="globalStatusDot"></span>
+      <!-- Mobile Drawer Footer (Screenshot 1: Blue [ ✏️ Chat ] pill and [ AJ ] Avatar) -->
+      <div class="drawer-mobile-footer">
+        <button class="drawer-chat-pill-btn" id="drawerChatPillBtn" title="New Chat">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 20h9"></path>
+            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+          </svg>
+          <span>Chat</span>
         </button>
+        <div class="drawer-user-avatar" title="Arjit Jaiswal">
+          <span>AJ</span>
+        </div>
       </div>
     </aside>
 
@@ -138,15 +176,18 @@
       <header class="topbar">
         <!-- Topbar Left: Mobile trigger & Context breadcrumb -->
         <div class="topbar-left">
+          <!-- Mobile ChatGPT Drawer Toggle Button [ = ] (Screenshot 2) -->
           <button class="icon-btn mobile-menu-btn" id="openSidebarBtn" title="Toggle Sidebar">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <line x1="4" y1="9" x2="20" y2="9"></line>
+              <line x1="4" y1="15" x2="16" y2="15"></line>
+            </svg>
           </button>
 
-          <!-- Upgraded Intelligent Back Button -->
+          <!-- Upgraded Intelligent Back Button [ < Back ] -->
           <button class="topbar-back-btn" id="topbarBackBtn" title="Go back to Home / Previous View (Esc or Alt+←)" aria-label="Go Back">
-            <svg class="back-arrow-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="19" y1="12" x2="5" y2="12"></line>
-              <polyline points="12 19 5 12 12 5"></polyline>
+            <svg class="back-arrow-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
             <span class="back-label">Back</span>
             <kbd class="back-kbd-badge">Esc</kbd>
@@ -216,11 +257,10 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
           </button>
 
-          <!-- Mobile New Chat Button -->
+          <!-- Mobile New Chat Button [ 💭 ] (Screenshot 2) -->
           <button class="icon-btn mobile-new-chat-btn" id="mobileNewChatBtn" title="New Chat">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19"></line>
-              <line x1="5" y1="12" x2="19" y2="12"></line>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
             </svg>
           </button>
         </div>
@@ -785,12 +825,20 @@
             <button class="mode-tag-btn" data-mode="business">💡 Business</button>
           </div>
 
-          <!-- Prompt Form -->
+          <!-- Prompt Form (Screenshot 2: Floating Pill Dock) -->
           <form class="prompt-form" id="promptForm" onsubmit="return false;">
+            <!-- Plus Button: Attach or Tools -->
+            <button type="button" class="dock-tool-btn dock-plus-btn" id="fileUploadBtn" title="Attach file or tools">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+
             <textarea
               id="promptInput"
               class="prompt-textarea"
-              placeholder="Ask Unica AI anything... Type '/' or ⌘K for command center"
+              placeholder="Ask ChatGPT"
               rows="1"
               required
             ></textarea>
@@ -799,24 +847,34 @@
               <!-- Hidden File Input -->
               <input type="file" id="fileInput" style="display: none;" accept=".js,.ts,.py,.json,.txt,.md,.html,.css" />
 
-              <!-- File Upload Trigger -->
-              <button type="button" class="tool-icon-btn" id="fileUploadBtn" title="Attach file or code (or drag & drop)">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
-              </button>
-
-              <!-- Image Command Trigger -->
-              <button type="button" class="tool-icon-btn" id="quickImagePromptBtn" title="Generate AI Image (/image)">
+              <!-- Image Command Trigger (Desktop) -->
+              <button type="button" class="tool-icon-btn desktop-only-tool" id="quickImagePromptBtn" title="Generate AI Image (/image)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
               </button>
 
-              <!-- Voice Dictation -->
-              <button type="button" class="tool-icon-btn" id="voiceMicBtn" title="Voice dictation">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+              <!-- Voice Dictation Mic Button -->
+              <button type="button" class="dock-mic-btn" id="voiceMicBtn" title="Voice dictation">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                  <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                  <line x1="12" y1="19" x2="12" y2="23"></line>
+                  <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
               </button>
 
-              <!-- Send Button -->
-              <button type="submit" class="send-btn" id="sendBtn" title="Send Message">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              <!-- Action Button: Blue Soundwave [ ılı ] on Mobile / Send Arrow [ ↑ ] when Typing -->
+              <button type="submit" class="dock-action-circle send-btn" id="sendBtn" title="Send or Voice Mode">
+                <svg class="waveform-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <line x1="3" y1="10" x2="3" y2="14"></line>
+                  <line x1="7.5" y1="7" x2="7.5" y2="17"></line>
+                  <line x1="12" y1="4" x2="12" y2="20"></line>
+                  <line x1="16.5" y1="7" x2="16.5" y2="17"></line>
+                  <line x1="21" y1="10" x2="21" y2="14"></line>
+                </svg>
+                <svg class="send-arrow-svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
               </button>
             </div>
           </form>
