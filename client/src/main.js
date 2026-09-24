@@ -2152,13 +2152,364 @@ function initEventListeners() {
       }
     });
   });
+
+  // Authentication & Account Event Listeners
+  initAuthEventListeners();
 }
 
 // ==========================================
-// 16. Initialization
+// 16. Authentication & User Profile System
+// ==========================================
+const STORAGE_KEY_AUTH = 'klyro_auth_user_v1';
+
+let currentUser = {
+  isLoggedIn: true,
+  name: 'Arjit Jaiswal',
+  email: 'arjit@klyro.ai',
+  avatarText: 'AJ',
+  plan: 'Pro'
+};
+
+let currentAuthMode = 'login'; // 'login' | 'signup'
+
+function loadAuthState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_AUTH);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') {
+        currentUser = { ...currentUser, ...parsed };
+      }
+    }
+  } catch (e) {
+    console.error('Failed to load auth state:', e);
+  }
+}
+
+function saveAuthState() {
+  try {
+    localStorage.setItem(STORAGE_KEY_AUTH, JSON.stringify(currentUser));
+  } catch (e) {
+    console.error('Failed to save auth state:', e);
+  }
+}
+
+function getInitials(name) {
+  if (!name) return 'AJ';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+function updateAuthUI() {
+  const topbarUserPill = document.getElementById('topbarUserPill');
+  const topbarGuestActions = document.getElementById('topbarGuestActions');
+  const sidebarUserCard = document.getElementById('sidebarUserCard');
+  const sidebarGuestCard = document.getElementById('sidebarGuestCard');
+  const topbarUserAvatar = document.getElementById('topbarUserAvatar');
+  const topbarUserName = document.getElementById('topbarUserName');
+  const sidebarUserAvatar = document.getElementById('sidebarUserAvatar');
+  const sidebarUserName = document.getElementById('sidebarUserName');
+  const drawerAvatarText = document.getElementById('drawerAvatarText');
+  const accountModalAvatar = document.getElementById('accountModalAvatar');
+  const accountModalName = document.getElementById('accountModalName');
+  const accountModalEmail = document.getElementById('accountModalEmail');
+
+  const initials = currentUser.avatarText || getInitials(currentUser.name);
+  const displayName = currentUser.name || 'User';
+  const firstName = displayName.split(' ')[0];
+
+  if (topbarUserAvatar) topbarUserAvatar.textContent = initials;
+  if (topbarUserName) topbarUserName.textContent = firstName;
+  if (sidebarUserAvatar) sidebarUserAvatar.textContent = initials;
+  if (sidebarUserName) sidebarUserName.textContent = displayName;
+  if (drawerAvatarText) drawerAvatarText.textContent = initials;
+  if (accountModalAvatar) accountModalAvatar.textContent = initials;
+  if (accountModalName) accountModalName.textContent = displayName;
+  if (accountModalEmail) accountModalEmail.textContent = currentUser.email || 'user@klyro.ai';
+
+  if (currentUser.isLoggedIn) {
+    if (topbarUserPill) topbarUserPill.style.display = 'inline-flex';
+    if (topbarGuestActions) topbarGuestActions.style.display = 'none';
+    if (sidebarUserCard) sidebarUserCard.style.display = 'flex';
+    if (sidebarGuestCard) sidebarGuestCard.style.display = 'none';
+  } else {
+    if (topbarUserPill) topbarUserPill.style.display = 'none';
+    if (topbarGuestActions) topbarGuestActions.style.display = 'inline-flex';
+    if (sidebarUserCard) sidebarUserCard.style.display = 'none';
+    if (sidebarGuestCard) sidebarGuestCard.style.display = 'block';
+  }
+}
+
+function openAuthModal(mode = 'login') {
+  currentAuthMode = mode;
+  const authModal = document.getElementById('authModal');
+  const authTabLogin = document.getElementById('authTabLogin');
+  const authTabSignup = document.getElementById('authTabSignup');
+  const authNameField = document.getElementById('authNameField');
+  const authModalTitle = document.getElementById('authModalTitle');
+  const authModalSubtitle = document.getElementById('authModalSubtitle');
+  const authSubmitBtnText = document.getElementById('authSubmitBtnText');
+  const authSwitchText = document.getElementById('authSwitchText');
+  const authSwitchLinkBtn = document.getElementById('authSwitchLinkBtn');
+
+  if (mode === 'signup') {
+    authTabLogin?.classList.remove('active');
+    authTabSignup?.classList.add('active');
+    if (authNameField) authNameField.style.display = 'flex';
+    if (authModalTitle) authModalTitle.textContent = 'Create your Klyro Account';
+    if (authModalSubtitle) authModalSubtitle.textContent = 'Join Klyro AI to sync discussions, IDE workspace & SaaS projects.';
+    if (authSubmitBtnText) authSubmitBtnText.textContent = 'Create Free Account';
+    if (authSwitchText) authSwitchText.textContent = 'Already have an account?';
+    if (authSwitchLinkBtn) authSwitchLinkBtn.textContent = 'Log in';
+  } else {
+    authTabLogin?.classList.add('active');
+    authTabSignup?.classList.remove('active');
+    if (authNameField) authNameField.style.display = 'none';
+    if (authModalTitle) authModalTitle.textContent = 'Welcome back to Klyro AI';
+    if (authModalSubtitle) authModalSubtitle.textContent = 'Sign in to access your synchronized conversations & developer studio.';
+    if (authSubmitBtnText) authSubmitBtnText.textContent = 'Sign In to Klyro AI';
+    if (authSwitchText) authSwitchText.textContent = "Don't have an account?";
+    if (authSwitchLinkBtn) authSwitchLinkBtn.textContent = 'Create one free';
+  }
+
+  if (authModal) {
+    authModal.style.display = 'flex';
+    const emailInput = document.getElementById('authEmailInput');
+    if (emailInput) setTimeout(() => emailInput.focus(), 100);
+  }
+}
+
+function closeAuthModal() {
+  const authModal = document.getElementById('authModal');
+  if (authModal) authModal.style.display = 'none';
+}
+
+function openAccountModal() {
+  const accountModal = document.getElementById('accountModal');
+  if (accountModal) {
+    updateAuthUI();
+    accountModal.style.display = 'flex';
+  }
+}
+
+function closeAccountModal() {
+  const accountModal = document.getElementById('accountModal');
+  if (accountModal) accountModal.style.display = 'none';
+}
+
+function handleAuthSubmit() {
+  const emailInput = document.getElementById('authEmailInput');
+  const passwordInput = document.getElementById('authPasswordInput');
+  const nameInput = document.getElementById('authNameInput');
+
+  const email = (emailInput?.value || '').trim();
+  const password = (passwordInput?.value || '').trim();
+  const name = currentAuthMode === 'signup' && nameInput?.value.trim() ? nameInput.value.trim() : (currentUser.name || 'Arjit Jaiswal');
+
+  if (!email || !email.includes('@')) {
+    showToast('Please enter a valid email address');
+    if (emailInput) emailInput.focus();
+    return;
+  }
+
+  if (!password || password.length < 6) {
+    showToast('Password must be at least 6 characters');
+    if (passwordInput) passwordInput.focus();
+    return;
+  }
+
+  currentUser = {
+    isLoggedIn: true,
+    name: name,
+    email: email,
+    avatarText: getInitials(name),
+    plan: 'Pro'
+  };
+
+  saveAuthState();
+  updateAuthUI();
+  closeAuthModal();
+  showToast(currentAuthMode === 'signup' ? `Account created! Welcome, ${name}` : `Welcome back, ${name}!`);
+}
+
+function handleSocialAuth(provider) {
+  showToast(`Authenticating securely with ${provider}...`);
+  setTimeout(() => {
+    const name = currentUser.name || 'Arjit Jaiswal';
+    currentUser = {
+      isLoggedIn: true,
+      name: name,
+      email: currentUser.email || `arjit@${provider.toLowerCase()}.com`,
+      avatarText: getInitials(name),
+      plan: 'Pro'
+    };
+    saveAuthState();
+    updateAuthUI();
+    closeAuthModal();
+    showToast(`Successfully connected with ${provider}!`);
+  }, 400);
+}
+
+function handleSignOut() {
+  currentUser.isLoggedIn = false;
+  saveAuthState();
+  updateAuthUI();
+  closeAccountModal();
+  showToast('You have signed out of Klyro AI');
+}
+
+function exportChatHistoryJSON() {
+  const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(chats, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute('href', dataStr);
+  downloadAnchor.setAttribute('download', `klyro_ai_discussions_${Date.now()}.json`);
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  showToast('Discussion history exported successfully!');
+}
+
+function initAuthEventListeners() {
+  // Desktop Topbar Triggers
+  const topbarUserPill = document.getElementById('topbarUserPill');
+  const topbarLoginBtn = document.getElementById('topbarLoginBtn');
+  const topbarSignupBtn = document.getElementById('topbarSignupBtn');
+
+  if (topbarUserPill) topbarUserPill.addEventListener('click', openAccountModal);
+  if (topbarLoginBtn) topbarLoginBtn.addEventListener('click', () => openAuthModal('login'));
+  if (topbarSignupBtn) topbarSignupBtn.addEventListener('click', () => openAuthModal('signup'));
+
+  // Desktop Sidebar Triggers
+  const sidebarUserCard = document.getElementById('sidebarUserCard');
+  const sidebarAccountBtn = document.getElementById('sidebarAccountBtn');
+  const sidebarLoginBtn = document.getElementById('sidebarLoginBtn');
+  const sidebarSignupBtn = document.getElementById('sidebarSignupBtn');
+
+  if (sidebarUserCard) sidebarUserCard.addEventListener('click', openAccountModal);
+  if (sidebarAccountBtn) {
+    sidebarAccountBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openAccountModal();
+    });
+  }
+  if (sidebarLoginBtn) sidebarLoginBtn.addEventListener('click', () => openAuthModal('login'));
+  if (sidebarSignupBtn) sidebarSignupBtn.addEventListener('click', () => openAuthModal('signup'));
+
+  // Mobile Drawer Avatar Trigger
+  const drawerUserAvatar = document.getElementById('drawerUserAvatar');
+  if (drawerUserAvatar) {
+    drawerUserAvatar.addEventListener('click', () => {
+      if (currentUser.isLoggedIn) {
+        openAccountModal();
+      } else {
+        openAuthModal('login');
+      }
+    });
+  }
+
+  // Auth Modal Controls
+  const authModal = document.getElementById('authModal');
+  const closeAuthModalBtn = document.getElementById('closeAuthModalBtn');
+  const authTabLogin = document.getElementById('authTabLogin');
+  const authTabSignup = document.getElementById('authTabSignup');
+  const authSwitchLinkBtn = document.getElementById('authSwitchLinkBtn');
+  const authForm = document.getElementById('authForm');
+  const googleAuthBtn = document.getElementById('googleAuthBtn');
+  const githubAuthBtn = document.getElementById('githubAuthBtn');
+  const authTogglePwdBtn = document.getElementById('authTogglePwdBtn');
+  const authForgotLink = document.getElementById('authForgotLink');
+
+  if (closeAuthModalBtn) closeAuthModalBtn.addEventListener('click', closeAuthModal);
+  if (authModal) {
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal) closeAuthModal();
+    });
+  }
+  if (authTabLogin) authTabLogin.addEventListener('click', () => openAuthModal('login'));
+  if (authTabSignup) authTabSignup.addEventListener('click', () => openAuthModal('signup'));
+  if (authSwitchLinkBtn) {
+    authSwitchLinkBtn.addEventListener('click', () => {
+      openAuthModal(currentAuthMode === 'login' ? 'signup' : 'login');
+    });
+  }
+  if (authForm) {
+    authForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      handleAuthSubmit();
+    });
+  }
+  if (googleAuthBtn) googleAuthBtn.addEventListener('click', () => handleSocialAuth('Google'));
+  if (githubAuthBtn) githubAuthBtn.addEventListener('click', () => handleSocialAuth('GitHub'));
+  if (authTogglePwdBtn) {
+    authTogglePwdBtn.addEventListener('click', () => {
+      const pwd = document.getElementById('authPasswordInput');
+      if (pwd) {
+        pwd.type = pwd.type === 'password' ? 'text' : 'password';
+      }
+    });
+  }
+  if (authForgotLink) {
+    authForgotLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast('Password reset link sent to your registered email');
+    });
+  }
+
+  // Account Modal Controls
+  const accountModal = document.getElementById('accountModal');
+  const closeAccountModalBtn = document.getElementById('closeAccountModalBtn');
+  const accountEditProfileBtn = document.getElementById('accountEditProfileBtn');
+  const accountEngineSettingsBtn = document.getElementById('accountEngineSettingsBtn');
+  const accountExportHistoryBtn = document.getElementById('accountExportHistoryBtn');
+  const accountSwitchUserBtn = document.getElementById('accountSwitchUserBtn');
+  const signOutBtn = document.getElementById('signOutBtn');
+
+  if (closeAccountModalBtn) closeAccountModalBtn.addEventListener('click', closeAccountModal);
+  if (accountModal) {
+    accountModal.addEventListener('click', (e) => {
+      if (e.target === accountModal) closeAccountModal();
+    });
+  }
+  if (accountEditProfileBtn) {
+    accountEditProfileBtn.addEventListener('click', () => {
+      const newName = prompt('Update display name:', currentUser.name);
+      if (newName && newName.trim()) {
+        currentUser.name = newName.trim();
+        currentUser.avatarText = getInitials(currentUser.name);
+        saveAuthState();
+        updateAuthUI();
+        showToast('Profile name updated!');
+      }
+    });
+  }
+  if (accountEngineSettingsBtn) {
+    accountEngineSettingsBtn.addEventListener('click', () => {
+      closeAccountModal();
+      const settingsModal = document.getElementById('settingsModal');
+      if (settingsModal) settingsModal.style.display = 'flex';
+    });
+  }
+  if (accountExportHistoryBtn) {
+    accountExportHistoryBtn.addEventListener('click', exportChatHistoryJSON);
+  }
+  if (accountSwitchUserBtn) {
+    accountSwitchUserBtn.addEventListener('click', () => {
+      closeAccountModal();
+      openAuthModal('login');
+    });
+  }
+  if (signOutBtn) {
+    signOutBtn.addEventListener('click', handleSignOut);
+  }
+}
+
+// ==========================================
+// 17. Initialization
 // ==========================================
 function init() {
   initSpotlight();
+  loadAuthState();
   chats = loadChatsFromStorage();
   if (!Array.isArray(chats) || chats.length === 0) {
     createNewChatSession();
@@ -2172,6 +2523,7 @@ function init() {
   initCursorIDE();
   initEventListeners();
   updateBackButtonState();
+  updateAuthUI();
 }
 
 if (document.readyState === 'loading') {
@@ -2179,3 +2531,4 @@ if (document.readyState === 'loading') {
 } else {
   init();
 }
+
