@@ -21,13 +21,33 @@
       <div class="sidebar-header">
         <div class="brand">
           <div class="brand-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+              <defs>
+                <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00e5ff" />
+                  <stop offset="50%" stop-color="#8b5cf6" />
+                  <stop offset="100%" stop-color="#ec4899" />
+                </linearGradient>
+                <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="2.5" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+              <path d="M24 2L29.5 16.5L44 19L33 29L36 44L24 36L12 44L15 29L4 19L18.5 16.5L24 2Z" stroke="url(#brandGrad)" stroke-width="2.5" stroke-linejoin="round" fill="rgba(0,229,255,0.12)" filter="url(#neonGlow)"/>
+              <circle cx="24" cy="24" r="4" fill="url(#brandGrad)"/>
+              <circle cx="24" cy="9" r="2.2" fill="#00e5ff"/>
+              <circle cx="39" cy="24" r="2.2" fill="#ec4899"/>
+              <circle cx="24" cy="39" r="2.2" fill="#8b5cf6"/>
+              <circle cx="9" cy="24" r="2.2" fill="#00e5ff"/>
+              <line x1="24" y1="9" x2="24" y2="20" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <line x1="24" y1="28" x2="24" y2="39" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <line x1="9" y1="24" x2="20" y2="24" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <line x1="28" y1="24" x2="39" y2="24" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="2 2"/>
             </svg>
           </div>
           <div class="brand-text">
             <h2>Klyro AI</h2>
-            <span class="brand-tagline">Build, Think, Scale Faster</span>
+            <span class="brand-tagline">AI Workspace & Cursor Engine</span>
           </div>
         </div>
         <button class="icon-btn close-sidebar-btn" id="closeSidebarBtn" title="Close Sidebar">
@@ -45,6 +65,15 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="sidebarSearchInput" placeholder="Search chats..." autocomplete="off" />
       </div>
+
+      <!-- Quick Command Bar Trigger in Sidebar -->
+      <button class="sidebar-cmd-trigger" id="sidebarCmdTrigger">
+        <div class="sidebar-cmd-left">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>
+          <span>Command Bar</span>
+        </div>
+        <kbd class="kbd-badge">⌘K</kbd>
+      </button>
 
       <!-- AI Modes Selector -->
       <div class="sidebar-section">
@@ -110,9 +139,17 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
             <span>Chat OS</span>
           </button>
+          <button class="sidebar-view-btn" id="sideNavEditor" data-tab="editor">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            <span>Cursor IDE</span>
+          </button>
           <button class="sidebar-view-btn" id="sideNavStudio" data-tab="studio">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
             <span>Auto SaaS Studio</span>
+          </button>
+          <button class="sidebar-view-btn" id="sideNavDashboard" data-tab="dashboard">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Projects & Tools</span>
           </button>
           <button class="sidebar-view-btn" id="sideNavMemory" data-tab="memory">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -148,9 +185,17 @@
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
               <span>Chat OS</span>
             </button>
+            <button class="os-tab-btn" data-tab="editor" id="tabBtnEditor">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+              <span>Cursor IDE</span>
+            </button>
             <button class="os-tab-btn" data-tab="studio" id="tabBtnStudio">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
               <span>Auto SaaS Studio</span>
+            </button>
+            <button class="os-tab-btn" data-tab="dashboard" id="tabBtnDashboard">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+              <span>Projects & Tools</span>
             </button>
             <button class="os-tab-btn" data-tab="memory" id="tabBtnMemory">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
@@ -161,6 +206,13 @@
           <div class="chat-meta">
             <span class="chat-title" id="activeChatTitle">New Discussion</span>
           </div>
+        </div>
+
+        <!-- Topbar Center: Floating Quick Command Bar Button -->
+        <div class="topbar-command-trigger" id="topbarCmdTrigger" title="Open Floating Command Bar (⌘K)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span class="cmd-trigger-text">Create a SaaS app, debug, /image...</span>
+          <kbd class="kbd-badge">⌘K</kbd>
         </div>
 
         <!-- Mobile Minimal Brand Center (ChatGPT / Perplexity Style) -->
@@ -215,6 +267,15 @@
 
           <!-- Alive Hover Action Cards -->
           <div class="starter-cards">
+            <button class="starter-card" data-prompt="/image futuristic AI workspace" data-mode="problem-solving">
+              <div class="starter-header">
+                <span class="card-icon">🧠</span>
+                <span class="card-badge">Visual Engine</span>
+              </div>
+              <h4>Futuristic AI Workspace</h4>
+              <p>Generate 4K ultra-modern glassmorphic UI visual & PRO prompt.</p>
+            </button>
+
             <button class="starter-card" data-prompt="How to build an AI SaaS application from scratch?" data-mode="problem-solving">
               <div class="starter-header">
                 <span class="card-icon">⚙️</span>
@@ -241,15 +302,6 @@
               <h4>High-Margin SaaS Ideas</h4>
               <p>Practical validation plans, distribution channels, and unit economics.</p>
             </button>
-
-            <button class="starter-card" data-prompt="How to implement real-time streaming LLM responses in JavaScript with Server-Sent Events?" data-mode="problem-solving">
-              <div class="starter-header">
-                <span class="card-icon">⚡</span>
-                <span class="card-badge">Full-Stack</span>
-              </div>
-              <h4>Streaming LLM Responses</h4>
-              <p>Fetch API ReadableStream handler with chunk decoding and auto-scroll.</p>
-            </button>
           </div>
         </div>
 
@@ -268,7 +320,148 @@
         </div>
       </div>
 
-      <!-- View 2: Auto SaaS Studio (Flagship WOW Feature) -->
+      <!-- View 2: Cursor IDE Code Editor (Cursor-like Developer Studio) -->
+      <div class="studio-container cursor-ide-view" id="cursorIdeView" style="display: none;">
+        <div class="ide-workspace-layout">
+          <!-- IDE File Tree Sidebar -->
+          <div class="ide-sidebar">
+            <div class="ide-sidebar-header">
+              <span class="ide-sidebar-title">EXPLORER: KLYRO-CORE</span>
+              <button class="icon-btn-sm" id="ideNewFileBtn" title="New File">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              </button>
+            </div>
+            <div class="ide-file-tree" id="ideFileTree">
+              <div class="ide-file-item active" data-file="App.jsx">
+                <span class="file-icon react">⚛</span>
+                <span class="file-name">App.jsx</span>
+              </div>
+              <div class="ide-file-item" data-file="auth.js">
+                <span class="file-icon js">🟨</span>
+                <span class="file-name">auth.js</span>
+              </div>
+              <div class="ide-file-item" data-file="engine.js">
+                <span class="file-icon js">⚡</span>
+                <span class="file-name">engine.js</span>
+              </div>
+              <div class="ide-file-item" data-file="schema.sql">
+                <span class="file-icon sql">🗄</span>
+                <span class="file-name">schema.sql</span>
+              </div>
+              <div class="ide-file-item" data-file="styles.css">
+                <span class="file-icon css">🎨</span>
+                <span class="file-name">styles.css</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- IDE Monaco-like Center Editor -->
+          <div class="ide-editor-main">
+            <!-- Tabs Bar -->
+            <div class="ide-tabs-bar">
+              <div class="ide-tab active" id="ideActiveTab">
+                <span class="tab-icon">⚛</span>
+                <span class="tab-title" id="ideTabTitle">App.jsx</span>
+                <span class="tab-dirty-dot"></span>
+              </div>
+              <div class="ide-editor-actions">
+                <button class="ide-action-btn run-btn" id="ideRunBtn" title="Run Code (Simulate)">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                  <span>Run</span>
+                </button>
+                <button class="ide-action-btn" id="ideFormatBtn" title="Format Code">
+                  <span>Format</span>
+                </button>
+                <button class="ide-action-btn" id="ideCopyCodeBtn" title="Copy File Code">
+                  <span>Copy</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Code Body with Line Numbers -->
+            <div class="ide-code-wrapper">
+              <div class="ide-line-numbers" id="ideLineNumbers"></div>
+              <textarea class="ide-code-editor" id="ideCodeEditor" spellcheck="false" autocomplete="off"></textarea>
+            </div>
+
+            <!-- Bottom Output Terminal -->
+            <div class="ide-terminal-drawer">
+              <div class="ide-terminal-header">
+                <div class="terminal-header-left">
+                  <span class="terminal-dot green"></span>
+                  <span class="terminal-label">TERMINAL & CONSOLE</span>
+                </div>
+                <button class="text-btn" id="clearTerminalBtn">Clear</button>
+              </div>
+              <div class="ide-terminal-output" id="ideTerminalOutput">
+                <span class="term-dim">[Klyro IDE Engine v3.5] Workspace initialized. Ready to compile.</span>
+              </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="ide-status-bar">
+              <div class="status-left">
+                <span class="status-item"><span class="status-dot"></span> main*</span>
+                <span class="status-item" id="ideStatusCursor">Ln 1, Col 1</span>
+              </div>
+              <div class="status-right">
+                <span class="status-item">UTF-8</span>
+                <span class="status-item" id="ideStatusLang">JavaScript (React)</span>
+                <span class="status-item highlight">⚡ Gemini 3.5 Copilot</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- IDE Right AI Copilot Assistant -->
+          <div class="ide-copilot-panel">
+            <div class="copilot-header">
+              <div class="copilot-title-group">
+                <span class="copilot-spark">✦</span>
+                <span class="copilot-title">Cursor Copilot</span>
+              </div>
+              <span class="copilot-badge">Inline AI</span>
+            </div>
+
+            <div class="copilot-quick-actions">
+              <button class="copilot-quick-btn" id="copilotRefactorBtn">
+                <span>⚡</span>
+                <span>Refactor Code</span>
+              </button>
+              <button class="copilot-quick-btn" id="copilotExplainBtn">
+                <span>💡</span>
+                <span>Explain Logic</span>
+              </button>
+              <button class="copilot-quick-btn" id="copilotDebugBtn">
+                <span>🐞</span>
+                <span>Debug Issues</span>
+              </button>
+              <button class="copilot-quick-btn" id="copilotTypesBtn">
+                <span>🛡️</span>
+                <span>Add Validation</span>
+              </button>
+            </div>
+
+            <div class="copilot-chat-history" id="copilotChatHistory">
+              <div class="copilot-msg assistant">
+                <div class="copilot-msg-header">
+                  <span>Copilot</span>
+                  <span class="time">Now</span>
+                </div>
+                <p>I am monitoring <code>App.jsx</code>. Click any quick action above or type below to edit, optimize, or generate code directly into your editor.</p>
+              </div>
+            </div>
+
+            <div class="copilot-input-box">
+              <input type="text" id="copilotInput" placeholder="Ask AI to edit or generate..." />
+              <button id="copilotSendBtn" class="icon-btn-sm" title="Send to Copilot">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View 3: Auto SaaS Studio (Flagship WOW Feature) -->
       <div class="studio-container" id="saasStudioView" style="display: none;">
         <div class="studio-hero">
           <h2 class="studio-title">⚡ Auto SaaS Generator</h2>
@@ -310,7 +503,190 @@
         </div>
       </div>
 
-      <!-- View 3: Saved Memory & Projects -->
+      <!-- View 4: Projects Dashboard & AI Tools Grid -->
+      <div class="studio-container" id="projectsToolsView" style="display: none;">
+        <div class="studio-hero">
+          <h2 class="studio-title">📊 Projects & AI Tools Grid</h2>
+          <p class="studio-subtitle">All-in-one suite for deploying scalable SaaS architectures, monitoring micro-apps, and generating UI assets.</p>
+        </div>
+
+        <!-- Telemetry Metrics Bar -->
+        <div class="telemetry-bar">
+          <div class="telemetry-stat">
+            <span class="stat-label">Active Micro-Apps</span>
+            <span class="stat-value">4 Live</span>
+          </div>
+          <div class="telemetry-stat">
+            <span class="stat-label">Combined MRR</span>
+            <span class="stat-value text-accent">$25,500/mo</span>
+          </div>
+          <div class="telemetry-stat">
+            <span class="stat-label">Copilot Response</span>
+            <span class="stat-value">220ms</span>
+          </div>
+          <div class="telemetry-stat">
+            <span class="stat-label">Engine Health</span>
+            <span class="stat-value text-green">99.98% OK</span>
+          </div>
+        </div>
+
+        <!-- Section: AI Tools Grid -->
+        <div class="dashboard-section">
+          <div class="section-title-row">
+            <h3 class="dash-heading">🛠️ AI Tools Grid</h3>
+            <span class="dash-tag">Ready-to-use Generative Engines</span>
+          </div>
+          <div class="tools-grid">
+            <div class="tool-card" data-action="app-generator">
+              <div class="tool-icon-wrapper neon-blue">📱</div>
+              <div class="tool-card-body">
+                <h4>App Generator</h4>
+                <p>Scaffold full-stack micro-apps with Next.js, Postgres & Stripe authentication.</p>
+              </div>
+              <button class="tool-action-btn">Launch ⚡</button>
+            </div>
+
+            <div class="tool-card" data-action="code-debugger">
+              <div class="tool-icon-wrapper neon-purple">🐞</div>
+              <div class="tool-card-body">
+                <h4>Code Debugger</h4>
+                <p>Deep AST static analysis, memory leak detection, and automated performance fixes.</p>
+              </div>
+              <button class="tool-action-btn">Debug Code 🔍</button>
+            </div>
+
+            <div class="tool-card" data-action="api-builder">
+              <div class="tool-icon-wrapper neon-green">🔌</div>
+              <div class="tool-card-body">
+                <h4>API Builder</h4>
+                <p>Generate secure REST and GraphQL endpoints with rate limiting and JWT auth.</p>
+              </div>
+              <button class="tool-action-btn">Build API ⚙️</button>
+            </div>
+
+            <div class="tool-card" data-action="ui-generator">
+              <div class="tool-icon-wrapper neon-amber">🎨</div>
+              <div class="tool-card-body">
+                <h4>UI Generator</h4>
+                <p>Generate glassmorphic, responsive Tailwind & CSS components with animations.</p>
+              </div>
+              <button class="tool-action-btn">Design UI 🪄</button>
+            </div>
+
+            <div class="tool-card" data-action="visual-studio">
+              <div class="tool-icon-wrapper neon-pink">🖼️</div>
+              <div class="tool-card-body">
+                <h4>Visual /image Studio</h4>
+                <p>Prompt-to-4K AI image renderer with flux enhancements & style modifiers.</p>
+              </div>
+              <button class="tool-action-btn">Open Studio 🚀</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Active Projects Dashboard -->
+        <div class="dashboard-section" style="margin-top: 32px;">
+          <div class="section-title-row">
+            <h3 class="dash-heading">📈 Active SaaS Projects</h3>
+            <span class="dash-tag">Production Portfolios</span>
+          </div>
+          <div class="projects-dashboard-grid">
+            <div class="project-dash-card">
+              <div class="card-top-row">
+                <div class="proj-badge live">● LIVE</div>
+                <span class="proj-category">FinTech Micro-SaaS</span>
+              </div>
+              <h4>FinanceFlow AI</h4>
+              <p>Automated subscription reconciliation & ledger anomalies for remote agencies.</p>
+              <div class="proj-stats-row">
+                <div>
+                  <span class="proj-metric-num">$4,200</span>
+                  <span class="proj-metric-label">MRR</span>
+                </div>
+                <div>
+                  <span class="proj-metric-num">94%</span>
+                  <span class="proj-metric-label">Gross Margin</span>
+                </div>
+                <div>
+                  <span class="proj-metric-num">312</span>
+                  <span class="proj-metric-label">Subscribers</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-dash-card">
+              <div class="card-top-row">
+                <div class="proj-badge live">● LIVE</div>
+                <span class="proj-category">Developer Tool</span>
+              </div>
+              <h4>Klyro Copilot IDE</h4>
+              <p>Contextual inline coding agent and multi-turn refactoring assistant.</p>
+              <div class="proj-stats-row">
+                <div>
+                  <span class="proj-metric-num">2.4k</span>
+                  <span class="proj-metric-label">Daily Calls</span>
+                </div>
+                <div>
+                  <span class="proj-metric-num">210ms</span>
+                  <span class="proj-metric-label">Avg Latency</span>
+                </div>
+                <div>
+                  <span class="proj-metric-num">99.4%</span>
+                  <span class="proj-metric-label">Accuracy</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-dash-card">
+              <div class="card-top-row">
+                <div class="proj-badge live">● LIVE</div>
+                <span class="proj-category">Vertical SaaS</span>
+              </div>
+              <h4>DentistFlow CRM</h4>
+              <p>Automated patient recall SMS, appointment fill-in, and insurance triage.</p>
+              <div class="proj-stats-row">
+                <div>
+                  <span class="proj-metric-num">$8,900</span>
+                  <span class="proj-metric-label">MRR</span>
+                </div>
+                <div>
+                  <span class="proj-metric-num">1.1%</span>
+                  <span class="proj-metric-label">Churn</span>
+                </div>
+                <div>
+                  <span class="proj-metric-num">48</span>
+                  <span class="proj-metric-label">Clinics</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="project-dash-card">
+              <div class="card-top-row">
+                <div class="proj-badge live">● LIVE</div>
+                <span class="proj-category">Content Automation</span>
+              </div>
+              <h4>NeuralSEO Engine</h4>
+              <p>Programmatic SEO and keyword topical authority generation on autopilot.</p>
+              <div class="proj-stats-row">
+                <div>
+                  <span class="proj-metric-num">$12,400</span>
+                  <span class="proj-metric-label">MRR</span>
+                </div>
+                <div>
+                  <span class="proj-metric-num">420k</span>
+                  <span class="proj-metric-label">Indexed Pages</span>
+                </div>
+                <div>
+                  <span class="proj-metric-num">1.8k</span>
+                  <span class="proj-metric-label">Active Users</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- View 5: Saved Memory & Context -->
       <div class="studio-container" id="memoryView" style="display: none;">
         <div class="studio-hero">
           <h2 class="studio-title">🧬 Saved Memory & Context</h2>
@@ -320,7 +696,7 @@
           <div class="saas-results-grid">
             <div class="saas-result-card">
               <h4>📁 Active Workspace</h4>
-              <p>Project: <strong>Klyro AI</strong> (Full-Stack Engine)</p>
+              <p>Project: <strong>Klyro AI</strong> (Full-Stack Engine & Cursor IDE)</p>
               <p style="margin-top:6px;">Assistant: <strong>Unica AI Master Orchestrator</strong></p>
             </div>
             <div class="saas-result-card">
@@ -337,9 +713,17 @@
         <div class="input-wrapper">
           <!-- Slash Commands Popup Menu -->
           <div class="slash-commands-menu" id="slashMenu" style="display: none;">
+            <button class="slash-cmd-item" data-cmd="/image">
+              <span class="slash-cmd-prefix">/image</span>
+              <span class="slash-cmd-desc">Generate 4K AI Workspace & UI visuals</span>
+            </button>
             <button class="slash-cmd-item" data-cmd="/code">
               <span class="slash-cmd-prefix">/code</span>
               <span class="slash-cmd-desc">Write clean, production-grade code</span>
+            </button>
+            <button class="slash-cmd-item" data-cmd="/cursor">
+              <span class="slash-cmd-prefix">/cursor</span>
+              <span class="slash-cmd-desc">Open Cursor IDE Code Studio</span>
             </button>
             <button class="slash-cmd-item" data-cmd="/startup">
               <span class="slash-cmd-prefix">/startup</span>
@@ -382,7 +766,7 @@
             <textarea
               id="promptInput"
               class="prompt-textarea"
-              placeholder="Ask Unica AI anything... Type '/' for command center"
+              placeholder="Ask Unica AI anything... Type '/' or ⌘K for command center"
               rows="1"
               required
             ></textarea>
@@ -394,6 +778,11 @@
               <!-- File Upload Trigger -->
               <button type="button" class="tool-icon-btn" id="fileUploadBtn" title="Attach file or code (or drag & drop)">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+              </button>
+
+              <!-- Image Command Trigger -->
+              <button type="button" class="tool-icon-btn" id="quickImagePromptBtn" title="Generate AI Image (/image)">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
               </button>
 
               <!-- Voice Dictation -->
@@ -415,6 +804,56 @@
         </div>
       </footer>
     </main>
+
+    <!-- ⚡ 6. FLOATING COMMAND PALETTE MODAL (CMD+K / CTRL+K) -->
+    <div class="cmd-palette-backdrop" id="commandPaletteModal" style="display: none;">
+      <div class="cmd-palette-dialog">
+        <div class="cmd-palette-search-row">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input
+            type="text"
+            id="cmdPaletteInput"
+            class="cmd-palette-input"
+            placeholder="Search commands, tools, or type '/image' (e.g. 'Create a SaaS app')..."
+            autocomplete="off"
+          />
+          <kbd class="cmd-esc-badge" id="closeCmdPaletteBtn">ESC</kbd>
+        </div>
+
+        <div class="cmd-palette-results" id="cmdPaletteResults">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <div class="cmd-palette-footer">
+          <div class="cmd-footer-keys">
+            <span><kbd>↑</kbd> <kbd>↓</kbd> Navigate</span>
+            <span><kbd>↵</kbd> Select</span>
+            <span><kbd>ESC</kbd> Close</span>
+          </div>
+          <span class="cmd-footer-brand">Klyro Command Bar</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🖼️ IMAGE LIGHTBOX & PROMPT INSPECTOR MODAL -->
+    <div class="lightbox-backdrop" id="imageLightboxModal" style="display: none;">
+      <div class="lightbox-dialog">
+        <button class="lightbox-close-btn" id="closeLightboxBtn">&times;</button>
+        <div class="lightbox-image-wrapper">
+          <img src="" alt="AI Visual" id="lightboxImg" />
+        </div>
+        <div class="lightbox-details">
+          <div class="lightbox-title-row">
+            <h4 id="lightboxTitle">Klyro AI 4K Visual</h4>
+            <div class="lightbox-actions">
+              <a href="#" download="klyro-ai-visual.jpg" class="lightbox-btn" id="lightboxDownloadBtn">Download 4K</a>
+              <button class="lightbox-btn primary" id="lightboxCopyPromptBtn">Copy PRO Prompt</button>
+            </div>
+          </div>
+          <p class="lightbox-prompt-text" id="lightboxPromptText"></p>
+        </div>
+      </div>
+    </div>
 
     <!-- Hidden Settings Modal -->
     <div class="modal-backdrop" id="settingsModal" style="display: none;">

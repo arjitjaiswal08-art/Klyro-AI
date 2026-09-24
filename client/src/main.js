@@ -14,7 +14,7 @@ marked.setOptions({
   }
 });
 
-// Custom renderer for code blocks to add header & copy button
+// Custom renderer for code blocks to add header, Apply to IDE & copy button
 const renderer = new marked.Renderer();
 renderer.code = function(token) {
   const text = token.text || token;
@@ -30,10 +30,16 @@ renderer.code = function(token) {
     <div class="code-block-wrapper">
       <div class="code-block-header">
         <span>${lang || 'code'}</span>
-        <button class="copy-code-btn" data-code="${escapedCode}" onclick="window.copyCodeSnippet(this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-          <span>Copy</span>
-        </button>
+        <div style="display:flex;align-items:center;">
+          <button class="apply-ide-code-btn" data-code="${escapedCode}" onclick="window.applyCodeToIDE(this)" title="Open & Edit in Cursor IDE">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+            <span>Apply to IDE</span>
+          </button>
+          <button class="copy-code-btn" data-code="${escapedCode}" onclick="window.copyCodeSnippet(this)">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span>Copy</span>
+          </button>
+        </div>
       </div>
       <pre><code class="hljs language-${language}">${highlighted}</code></pre>
     </div>
@@ -41,7 +47,7 @@ renderer.code = function(token) {
 };
 marked.use({ renderer });
 
-// Global helper for the rendered HTML copy buttons
+// Global helper for code snippet copy
 window.copyCodeSnippet = function(button) {
   const code = decodeURIComponent(button.getAttribute('data-code'));
   navigator.clipboard.writeText(code).then(() => {
@@ -56,6 +62,219 @@ window.copyCodeSnippet = function(button) {
   });
 };
 
+// Global helper to load code directly into Cursor IDE
+window.applyCodeToIDE = function(button) {
+  const code = decodeURIComponent(button.getAttribute('data-code'));
+  loadCodeIntoIDE(code);
+  switchTab('editor');
+  showToast('Applied code into Cursor IDE!');
+};
+
+// ==========================================
+// 🎨 /image Engine Presets & PRO Prompt Rules
+// ==========================================
+const IMAGE_PROMPT_PRESETS = [
+  {
+    id: 'logo',
+    keywords: ['logo', 'brand', 'icon', 'branding', 'symbol'],
+    title: 'Minimal Futuristic Logo',
+    prompt: `Minimal futuristic logo for "Klyro AI", glowing neon blue and purple gradient, abstract AI symbol (star + neural network fusion), dark background, glassmorphism style, soft glow, modern tech branding, clean vector, highly polished, 4k, centered composition`,
+    localAsset: '/assets/logo.jpg'
+  },
+  {
+    id: 'workspace',
+    keywords: ['workspace', 'futuristic ai workspace', 'hero', 'dashboard ui', 'unica'],
+    title: 'AI Workspace Dashboard UI',
+    prompt: `Futuristic AI workspace dashboard for "Klyro AI – Unica Engine", dark mode interface, neon blue and cyan glowing accents, glassmorphism panels, sidebar navigation, AI chat panel, code editor, command bar, modern SaaS UI, highly detailed, ultra clean, cinematic lighting, 4k`,
+    localAsset: '/assets/workspace_hero.jpg'
+  },
+  {
+    id: 'cursor',
+    keywords: ['cursor', 'editor', 'ide', 'code editor', 'coding interface', 'developer workspace'],
+    title: 'Cursor-like Editor UI',
+    prompt: `Advanced AI coding interface similar to Cursor IDE, dark theme, Monaco code editor in center, AI assistant panel on right with chat and suggestions, sidebar with files and projects, glowing UI elements, modern developer workspace, futuristic, ultra detailed`,
+    localAsset: '/assets/cursor_ide.jpg'
+  },
+  {
+    id: 'chat',
+    keywords: ['chat', 'chat interface', 'conversational', 'chat bubbles'],
+    title: 'Premium AI Chat Interface',
+    prompt: `Premium AI chat interface for Klyro AI, dark UI, glowing chat bubbles, streaming responses, action buttons like apply, refactor, explain, modern input box with icons, minimal and clean design, futuristic SaaS interface, high detail`,
+    localAsset: null
+  },
+  {
+    id: 'dashboard',
+    keywords: ['project dashboard', 'saas dashboard', 'projects', 'analytics', 'finance tracker'],
+    title: 'Modern Project Dashboard',
+    prompt: `Modern SaaS dashboard showing multiple AI projects, cards layout with apps like finance tracker, AI tools, startup ideas, analytics graphs, dark theme with neon gradients, glassmorphism UI, clean spacing, professional product design`,
+    localAsset: null
+  },
+  {
+    id: 'command',
+    keywords: ['command', 'command bar', 'command palette', 'floating command', 'palette'],
+    title: 'Floating Command Bar UI',
+    prompt: `Floating command palette UI, dark blurred background, search bar with text "Create a SaaS app", dropdown suggestions like debug code, generate API, design UI, glowing selection highlight, futuristic interface, clean minimal design`,
+    localAsset: null
+  },
+  {
+    id: 'tools',
+    keywords: ['tools', 'ai tools', 'tools grid', 'grid', 'app generator'],
+    title: 'AI Tools Grid',
+    prompt: `Grid of AI tools in a SaaS interface, cards like App Generator, Code Debugger, API Builder, UI Generator, neon gradient borders, dark modern UI, glassmorphism, highly polished product design`,
+    localAsset: null
+  },
+  {
+    id: 'landing',
+    keywords: ['landing', 'landing page', 'hero', 'marketing', 'all-in-one'],
+    title: 'Futuristic SaaS Landing Page Hero',
+    prompt: `Futuristic SaaS landing page for Klyro AI, large hero text "Your All-in-One AI Workspace", glowing 3D icon, dark gradient background, neon blue and purple theme, modern typography, buttons like AI Chat and Code Editor, cinematic lighting, premium design`,
+    localAsset: null
+  }
+];
+
+const STYLE_VARIATIONS = [
+  'cyberpunk style',
+  'minimal Apple-like UI',
+  'Figma design system',
+  'startup landing page style',
+  'dribbble shot'
+];
+
+function convertToProPrompt(userInput) {
+  const cleanInput = userInput.replace(/^\/image\s*/i, '').trim();
+  const lower = cleanInput.toLowerCase();
+
+  for (const preset of IMAGE_PROMPT_PRESETS) {
+    if (preset.keywords.some(k => lower.includes(k))) {
+      return {
+        title: preset.title,
+        prompt: preset.prompt,
+        localAsset: preset.localAsset,
+        input: cleanInput
+      };
+    }
+  }
+
+  // Fallback PRO Prompt (INSANE quality)
+  const topic = cleanInput || 'Futuristic AI SaaS interface';
+  return {
+    title: `AI Visual: ${topic}`,
+    prompt: `Ultra modern futuristic AI SaaS interface for "${topic}", dark mode, neon blue, cyan and purple glowing accents, glassmorphism UI panels, sidebar navigation, AI chat assistant, code editor, command palette, highly detailed, cinematic lighting, premium product design, 4k, sharp, clean, no people`,
+    localAsset: null,
+    input: cleanInput
+  };
+}
+
+// ==========================================
+// 💻 Cursor IDE Virtual File System
+// ==========================================
+const IDE_FILES = {
+  'App.jsx': `import React, { useState } from 'react';
+import { KlyroEngine } from '@klyro/engine';
+import { CommandBar, CopilotChat, CodeEditor } from './components';
+
+export default function App() {
+  const [activeProject, setActiveProject] = useState('FinTech Micro-SaaS');
+  const [engineReady, setEngineReady] = useState(true);
+
+  return (
+    <div className="klyro-ide-root dark-mode">
+      <header className="ide-topbar">
+        <h1 className="logo-glow">Klyro AI — Cursor Engine</h1>
+        <CommandBar placeholder="Type 'Create a SaaS app' or ⌘K..." />
+      </header>
+
+      <main className="ide-split-pane">
+        <CodeEditor 
+          theme="vs-dark"
+          defaultLanguage="javascript"
+          options={{ minimap: { enabled: true }, fontSize: 13 }}
+        />
+        <CopilotChat 
+          model="gemini-3.5-flash-lite"
+          streaming={true}
+          autoRefactor={true}
+        />
+      </main>
+    </div>
+  );
+}`,
+  'auth.js': `// High-Performance JWT & Rate Limiting Middleware
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'klyro-ai-secret-key-3.5';
+
+export const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader?.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Missing or invalid token format' });
+  }
+
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(403).json({ error: 'Token expired or unauthorized' });
+  }
+};`,
+  'engine.js': `// Klyro AI - Unica Master Engine Integration
+import { GoogleGenAI } from '@google/genai';
+
+export async function runUnicaPipeline({ prompt, mode = 'problem-solving', level = 'intermediate' }) {
+  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+  
+  const response = await ai.models.generateContent({
+    model: 'gemini-3.5-flash-lite',
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    config: {
+      temperature: 0.7,
+      maxOutputTokens: 2500
+    }
+  });
+
+  return response.text;
+}`,
+  'schema.sql': `-- PostgreSQL Scalable Micro-SaaS Schema
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(255) UNIQUE NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE subscriptions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  stripe_customer_id VARCHAR(100),
+  plan_tier VARCHAR(50) DEFAULT 'pro',
+  status VARCHAR(50) DEFAULT 'active'
+);
+
+CREATE TABLE ai_audit_logs (
+  id BIGSERIAL PRIMARY KEY,
+  user_id UUID REFERENCES users(id),
+  tokens_used INT NOT NULL,
+  latency_ms INT NOT NULL,
+  executed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);`,
+  'styles.css': `/* Klyro AI Glassmorphism & Neon Glow Tokens */
+:root {
+  --neon-cyan: #00e5ff;
+  --neon-purple: #8b5cf6;
+  --bg-deep: #05070c;
+  --card-glass: rgba(13, 19, 33, 0.75);
+}
+
+.ide-workspace {
+  background: var(--bg-deep);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  backdrop-filter: blur(20px);
+}`
+};
+
+let activeIdeFile = 'App.jsx';
+
 // ==========================================
 // Application State
 // ==========================================
@@ -69,6 +288,8 @@ let isGenerating = false;
 let attachedFile = null; // { name, content }
 let isRecordingVoice = false;
 let speechRecognizer = null;
+let currentSelectedCmdIndex = 0;
+let filteredCommands = [];
 
 // ==========================================
 // DOM Element Selectors
@@ -96,6 +317,7 @@ const closeSidebarBtn = document.getElementById('closeSidebarBtn');
 const slashMenu = document.getElementById('slashMenu');
 const fileUploadBtn = document.getElementById('fileUploadBtn');
 const fileInput = document.getElementById('fileInput');
+const quickImagePromptBtn = document.getElementById('quickImagePromptBtn');
 const voiceMicBtn = document.getElementById('voiceMicBtn');
 const filePreviewContainer = document.getElementById('filePreviewContainer');
 const attachedFileName = document.getElementById('attachedFileName');
@@ -103,11 +325,18 @@ const removeFileBtn = document.getElementById('removeFileBtn');
 
 // OS Views & Tabs
 const inputAreaContainer = document.getElementById('inputAreaContainer');
+const cursorIdeView = document.getElementById('cursorIdeView');
 const saasStudioView = document.getElementById('saasStudioView');
+const projectsToolsView = document.getElementById('projectsToolsView');
 const memoryView = document.getElementById('memoryView');
+
 const tabBtnChat = document.getElementById('tabBtnChat');
+const tabBtnEditor = document.getElementById('tabBtnEditor');
 const tabBtnStudio = document.getElementById('tabBtnStudio');
+const tabBtnDashboard = document.getElementById('tabBtnDashboard');
 const tabBtnMemory = document.getElementById('tabBtnMemory');
+
+// Auto SaaS Generator
 const saasNicheInput = document.getElementById('saasNicheInput');
 const generateSaasBtn = document.getElementById('generateSaasBtn');
 const saasResultsGrid = document.getElementById('saasResultsGrid');
@@ -119,6 +348,44 @@ const saasTimelineText = document.getElementById('saasTimelineText');
 // Level Selector Buttons
 const levelBtns = document.querySelectorAll('.level-btn');
 const toastNotification = document.getElementById('toastNotification');
+
+// Command Palette Elements
+const commandPaletteModal = document.getElementById('commandPaletteModal');
+const cmdPaletteInput = document.getElementById('cmdPaletteInput');
+const cmdPaletteResults = document.getElementById('cmdPaletteResults');
+const closeCmdPaletteBtn = document.getElementById('closeCmdPaletteBtn');
+const topbarCmdTrigger = document.getElementById('topbarCmdTrigger');
+const sidebarCmdTrigger = document.getElementById('sidebarCmdTrigger');
+
+// Lightbox Elements
+const imageLightboxModal = document.getElementById('imageLightboxModal');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxTitle = document.getElementById('lightboxTitle');
+const lightboxPromptText = document.getElementById('lightboxPromptText');
+const lightboxDownloadBtn = document.getElementById('lightboxDownloadBtn');
+const lightboxCopyPromptBtn = document.getElementById('lightboxCopyPromptBtn');
+const closeLightboxBtn = document.getElementById('closeLightboxBtn');
+
+// Cursor IDE Elements
+const ideCodeEditor = document.getElementById('ideCodeEditor');
+const ideLineNumbers = document.getElementById('ideLineNumbers');
+const ideActiveTab = document.getElementById('ideActiveTab');
+const ideTabTitle = document.getElementById('ideTabTitle');
+const ideRunBtn = document.getElementById('ideRunBtn');
+const ideFormatBtn = document.getElementById('ideFormatBtn');
+const ideCopyCodeBtn = document.getElementById('ideCopyCodeBtn');
+const ideTerminalOutput = document.getElementById('ideTerminalOutput');
+const clearTerminalBtn = document.getElementById('clearTerminalBtn');
+const ideStatusCursor = document.getElementById('ideStatusCursor');
+const ideStatusLang = document.getElementById('ideStatusLang');
+
+const copilotRefactorBtn = document.getElementById('copilotRefactorBtn');
+const copilotExplainBtn = document.getElementById('copilotExplainBtn');
+const copilotDebugBtn = document.getElementById('copilotDebugBtn');
+const copilotTypesBtn = document.getElementById('copilotTypesBtn');
+const copilotChatHistory = document.getElementById('copilotChatHistory');
+const copilotInput = document.getElementById('copilotInput');
+const copilotSendBtn = document.getElementById('copilotSendBtn');
 
 // ==========================================
 // 1. Alive UI: Cursor Spotlight Tracker
@@ -167,7 +434,7 @@ function createNewChatSession() {
 }
 
 // ==========================================
-// 3. Smart Sidebar Rendering (Search + Pinned)
+// 3. Smart Sidebar Rendering
 // ==========================================
 function renderChatsList() {
   const query = (sidebarSearchInput.value || '').trim().toLowerCase();
@@ -180,7 +447,7 @@ function renderChatsList() {
   const pinned = filtered.filter(c => c.isPinned);
   const recent = filtered.filter(c => !c.isPinned);
 
-  // Render Pinned Section
+  // Pinned Section
   if (pinned.length > 0) {
     pinnedChatsSection.style.display = 'flex';
     pinnedChatsList.innerHTML = '';
@@ -192,7 +459,7 @@ function renderChatsList() {
     pinnedChatsList.innerHTML = '';
   }
 
-  // Render Recent Section
+  // Recent Section
   chatsList.innerHTML = '';
   if (recent.length === 0 && pinned.length === 0) {
     chatsList.innerHTML = `<div style="padding:10px;font-size:0.75rem;color:var(--text-muted);text-align:center;">No conversations found</div>`;
@@ -262,6 +529,9 @@ function renderActiveChat() {
   }
 }
 
+// ==========================================
+// 4. Message DOM Rendering (Text + /image Cards)
+// ==========================================
 function appendMessageToDOM(message, scroll = true) {
   const row = document.createElement('div');
   row.className = `message-row ${message.role}`;
@@ -272,7 +542,110 @@ function appendMessageToDOM(message, scroll = true) {
         ${escapeHtml(message.content)}
       </div>
     `;
+  } else if (message.isImage) {
+    // 🎨 Render AI Visual Card with PRO Prompt & Style Modifiers
+    const safePrompt = escapeHtml(message.proPrompt || '');
+    const imgUrl = message.imageUrl || message.localAsset;
+
+    row.innerHTML = `
+      <div class="assistant-avatar">🎨</div>
+      <div class="message-bubble assistant-bubble" style="max-width: 90%; width: 100%;">
+        <div class="message-header">
+          <div class="assistant-name-group">
+            <span class="assistant-name">Klyro Visual Studio</span>
+            <span class="ai-image-badge">4K FLUX</span>
+          </div>
+          <div class="message-actions">
+            <button class="action-icon-btn copy-prompt-btn" title="Copy PRO Prompt">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="ai-image-card">
+          <div class="ai-image-header">
+            <div class="ai-image-title-group">
+              <span>✦</span>
+              <h4>${escapeHtml(message.imageTitle || 'Klyro AI Workspace Visual')}</h4>
+            </div>
+            <span class="ai-image-badge">Cinematic 4K</span>
+          </div>
+
+          <div class="ai-image-media-box" title="Click to view in 4K Lightbox">
+            <img src="${imgUrl}" alt="${safePrompt}" class="generated-preview-img" loading="lazy" />
+          </div>
+
+          <div class="ai-image-prompt-details">
+            <div class="prompt-bar-label">
+              <span>🎯 Converted PRO Prompt</span>
+              <button class="text-btn copy-prompt-inner-btn" style="color:var(--accent-color);font-size:0.7rem;">Copy Prompt</button>
+            </div>
+            <div class="prompt-pro-text">${safePrompt}</div>
+
+            <div class="style-variations-strip">
+              <span class="style-strip-label">💡 Style Variations:</span>
+              ${STYLE_VARIATIONS.map(v => `<button class="style-variant-pill" data-style="${v}" data-base="${encodeURIComponent(message.baseInput || message.proPrompt)}">+ ${v}</button>`).join('')}
+            </div>
+          </div>
+        </div>
+
+        <div class="message-footer-actions">
+          <button class="msg-action-pill zoom-image-btn">
+            <span>🔍</span>
+            <span>View Fullscreen</span>
+          </button>
+          <button class="msg-action-pill download-image-btn">
+            <span>📥</span>
+            <span>Download Image</span>
+          </button>
+          <button class="msg-action-pill primary regenerate-variant-btn">
+            <span>✨</span>
+            <span>Regenerate Variant</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    // Hook up image interactions
+    const imgEl = row.querySelector('.generated-preview-img');
+    const mediaBox = row.querySelector('.ai-image-media-box');
+
+    const openLightbox = () => {
+      openImageLightbox({
+        src: imgEl.src,
+        title: message.imageTitle,
+        prompt: message.proPrompt
+      });
+    };
+
+    mediaBox.addEventListener('click', openLightbox);
+    row.querySelector('.zoom-image-btn')?.addEventListener('click', openLightbox);
+
+    row.querySelector('.download-image-btn')?.addEventListener('click', () => {
+      downloadImageUrl(imgEl.src, 'klyro-ai-visual.jpg');
+    });
+
+    row.querySelectorAll('.copy-prompt-btn, .copy-prompt-inner-btn').forEach(b => {
+      b.addEventListener('click', () => {
+        navigator.clipboard.writeText(message.proPrompt);
+        showToast('Copied PRO Prompt for Midjourney/Flux!');
+      });
+    });
+
+    // Style variation chips
+    row.querySelectorAll('.style-variant-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const style = pill.dataset.style;
+        const base = decodeURIComponent(pill.dataset.base);
+        executeImageGeneration(base, style);
+      });
+    });
+
+    row.querySelector('.regenerate-variant-btn')?.addEventListener('click', () => {
+      executeImageGeneration(message.baseInput || message.imageTitle);
+    });
   } else {
+    // Regular Assistant Message with Markdown + Action Buttons
     const renderedHtml = marked.parse(message.content || '');
     const badgeText = (message.metadata?.mode || currentMode).toUpperCase();
 
@@ -290,15 +663,60 @@ function appendMessageToDOM(message, scroll = true) {
             </button>
           </div>
         </div>
+
         <div class="markdown-body">
           ${renderedHtml}
+        </div>
+
+        <!-- 💬 4. Action buttons: Apply, Refactor, Explain, Copy -->
+        <div class="message-footer-actions">
+          <button class="msg-action-pill primary apply-to-ide-action" title="Send code to Cursor IDE">
+            <span>⚡</span>
+            <span>Apply to Cursor IDE</span>
+          </button>
+          <button class="msg-action-pill refactor-action" title="Refactor and optimize">
+            <span>🔄</span>
+            <span>Refactor</span>
+          </button>
+          <button class="msg-action-pill explain-action" title="Explain step-by-step">
+            <span>💡</span>
+            <span>Explain</span>
+          </button>
+          <button class="msg-action-pill copy-action">
+            <span>📋</span>
+            <span>Copy</span>
+          </button>
         </div>
       </div>
     `;
 
+    // Hook up response action buttons
     row.querySelector('.copy-msg-btn').addEventListener('click', () => {
       navigator.clipboard.writeText(message.content);
       showToast('Copied response to clipboard');
+    });
+
+    row.querySelector('.copy-action').addEventListener('click', () => {
+      navigator.clipboard.writeText(message.content);
+      showToast('Copied response to clipboard');
+    });
+
+    row.querySelector('.apply-to-ide-action').addEventListener('click', () => {
+      const codeMatch = message.content.match(/```(?:[a-zA-Z0-9_-]+)?\n([\s\S]*?)```/);
+      const codeToApply = codeMatch ? codeMatch[1] : message.content;
+      loadCodeIntoIDE(codeToApply);
+      switchTab('editor');
+      showToast('Transferred code to Cursor IDE!');
+    });
+
+    row.querySelector('.refactor-action').addEventListener('click', () => {
+      promptInput.value = 'Refactor and optimize the previous code/solution for maximum performance and clean architecture.';
+      handleUserSubmit();
+    });
+
+    row.querySelector('.explain-action').addEventListener('click', () => {
+      promptInput.value = 'Explain the key architecture and logic of the previous response in simple, clear terms.';
+      handleUserSubmit();
     });
   }
 
@@ -327,7 +745,7 @@ function showToast(text, duration = 3000) {
 }
 
 // ==========================================
-// 4. AI Mode Theme Morphing
+// 5. AI Mode Theme Morphing
 // ==========================================
 function setMode(mode) {
   currentMode = mode;
@@ -352,7 +770,62 @@ function setLevel(level) {
 }
 
 // ==========================================
-// 5. Streaming Real-Time Chat Submission
+// 6. /image Visual Generation Engine
+// ==========================================
+function executeImageGeneration(rawInput, styleVariation = '') {
+  const chat = getActiveChat();
+  if (!chat) return;
+
+  const proData = convertToProPrompt(rawInput);
+  let finalPrompt = proData.prompt;
+
+  if (styleVariation) {
+    finalPrompt += `, ${styleVariation}`;
+  }
+
+  // Construct image URL (Pollinations Flux AI or Preset Asset)
+  let imageUrl = '';
+  if (!styleVariation && proData.localAsset) {
+    imageUrl = proData.localAsset;
+  } else {
+    imageUrl = `https://image.pollinations.ai/prompt/${encodeURIComponent(finalPrompt)}?width=1280&height=720&nologo=true&model=flux`;
+  }
+
+  // Record user message if not already present
+  const userText = styleVariation ? `/image ${proData.input} [${styleVariation}]` : `/image ${rawInput}`;
+  const userMsg = { role: 'user', content: userText };
+  chat.messages.push(userMsg);
+  appendMessageToDOM(userMsg);
+
+  welcomeHero.style.display = 'none';
+
+  // Assistant image message
+  const assistantMsg = {
+    role: 'assistant',
+    isImage: true,
+    imageTitle: styleVariation ? `${proData.title} (${styleVariation})` : proData.title,
+    proPrompt: finalPrompt,
+    imageUrl: imageUrl,
+    localAsset: proData.localAsset,
+    baseInput: proData.input
+  };
+
+  chat.messages.push(assistantMsg);
+  saveChatsToStorage();
+  appendMessageToDOM(assistantMsg);
+
+  // Set chat title if first message
+  if (chat.messages.length <= 2) {
+    chat.title = `Visual: ${proData.title}`;
+    activeChatTitle.textContent = chat.title;
+    renderChatsList();
+  }
+
+  showToast('Generated 4K AI Visual & PRO Prompt!');
+}
+
+// ==========================================
+// 7. Streaming Real-Time Chat Submission
 // ==========================================
 async function handleUserSubmit() {
   let text = promptInput.value.trim();
@@ -360,6 +833,17 @@ async function handleUserSubmit() {
 
   const chat = getActiveChat();
   if (!chat) return;
+
+  // Intercept /image command
+  if (text.startsWith('/image')) {
+    promptInput.value = '';
+    promptInput.style.height = 'auto';
+    closeSlashMenu();
+    closeCommandPalette();
+    const query = text.replace(/^\/image\s*/, '').trim() || 'futuristic AI workspace';
+    executeImageGeneration(query);
+    return;
+  }
 
   // Append attached file content if present
   if (attachedFile) {
@@ -410,6 +894,24 @@ async function handleUserSubmit() {
       <div class="markdown-body stream-content">
         <span class="streaming-cursor">▊</span>
       </div>
+      <div class="message-footer-actions stream-footer-actions" style="display: none;">
+        <button class="msg-action-pill primary apply-to-ide-action">
+          <span>⚡</span>
+          <span>Apply to Cursor IDE</span>
+        </button>
+        <button class="msg-action-pill refactor-action">
+          <span>🔄</span>
+          <span>Refactor</span>
+        </button>
+        <button class="msg-action-pill explain-action">
+          <span>💡</span>
+          <span>Explain</span>
+        </button>
+        <button class="msg-action-pill copy-action">
+          <span>📋</span>
+          <span>Copy</span>
+        </button>
+      </div>
     </div>
   `;
 
@@ -417,6 +919,7 @@ async function handleUserSubmit() {
   scrollToBottom();
 
   const streamContentEl = assistantRow.querySelector('.stream-content');
+  const footerActionsEl = assistantRow.querySelector('.stream-footer-actions');
   let accumulatedText = '';
 
   isGenerating = true;
@@ -434,6 +937,8 @@ async function handleUserSubmit() {
       },
       onComplete: (metadata) => {
         streamContentEl.innerHTML = marked.parse(accumulatedText);
+        footerActionsEl.style.display = 'flex';
+
         const assistantMsg = {
           role: 'assistant',
           content: accumulatedText,
@@ -446,6 +951,29 @@ async function handleUserSubmit() {
         assistantRow.querySelector('.copy-msg-btn').addEventListener('click', () => {
           navigator.clipboard.writeText(accumulatedText);
           showToast('Copied response to clipboard');
+        });
+
+        assistantRow.querySelector('.copy-action').addEventListener('click', () => {
+          navigator.clipboard.writeText(accumulatedText);
+          showToast('Copied response to clipboard');
+        });
+
+        assistantRow.querySelector('.apply-to-ide-action').addEventListener('click', () => {
+          const codeMatch = accumulatedText.match(/```(?:[a-zA-Z0-9_-]+)?\n([\s\S]*?)```/);
+          const codeToApply = codeMatch ? codeMatch[1] : accumulatedText;
+          loadCodeIntoIDE(codeToApply);
+          switchTab('editor');
+          showToast('Transferred code to Cursor IDE!');
+        });
+
+        assistantRow.querySelector('.refactor-action').addEventListener('click', () => {
+          promptInput.value = 'Refactor and optimize the previous code/solution for maximum performance and clean architecture.';
+          handleUserSubmit();
+        });
+
+        assistantRow.querySelector('.explain-action').addEventListener('click', () => {
+          promptInput.value = 'Explain the key architecture and logic of the previous response in simple, clear terms.';
+          handleUserSubmit();
         });
       },
       onError: (err) => {
@@ -481,7 +1009,7 @@ function deleteChatSession(id) {
 }
 
 // ==========================================
-// 6. Command Center & Slash Menu
+// 8. Command Center & Slash Menu
 // ==========================================
 function openSlashMenu() {
   slashMenu.style.display = 'flex';
@@ -495,10 +1023,17 @@ function executeSlashCommand(cmd) {
   closeSlashMenu();
 
   switch (cmd) {
+    case '/image':
+      promptInput.value = '/image futuristic AI workspace';
+      promptInput.focus();
+      break;
     case '/code':
       setMode('tech-assist');
       promptInput.value = 'Write clean, production-grade code for: ';
       promptInput.focus();
+      break;
+    case '/cursor':
+      switchTab('editor');
       break;
     case '/startup':
       setMode('business');
@@ -523,7 +1058,356 @@ function executeSlashCommand(cmd) {
 }
 
 // ==========================================
-// 7. File Attachment & Drag & Drop
+// ⚡ 9. Floating Command Palette (Cmd+K / Ctrl+K)
+// ==========================================
+const COMMAND_ITEMS = [
+  // Actions
+  { id: 'saas-app', group: 'Actions', icon: '⚡', title: 'Create a SaaS app', desc: 'Generate complete MVP blueprint with unit economics', action: () => { switchTab('studio'); saasNicheInput.focus(); } },
+  { id: 'debug-code', group: 'Actions', icon: '🐞', title: 'Debug code', desc: 'Identify memory leaks, bottlenecks, and syntax errors', action: () => { switchTab('chat'); setMode('tech-assist'); promptInput.value = 'Debug this code issue: '; promptInput.focus(); } },
+  { id: 'generate-api', group: 'Actions', icon: '🔌', title: 'Generate API', desc: 'Create production Node/Express REST and GraphQL endpoints', action: () => { switchTab('chat'); setMode('tech-assist'); promptInput.value = 'Generate a high-performance Express REST API for: '; promptInput.focus(); } },
+  { id: 'design-ui', group: 'Actions', icon: '🎨', title: 'Design UI', desc: 'Build modern glassmorphic Tailwind & CSS components', action: () => { switchTab('chat'); promptInput.value = 'Design a glassmorphic dashboard component with dark mode tokens: '; promptInput.focus(); } },
+
+  // Visuals & /image
+  { id: 'img-workspace', group: 'Visual Engine (/image)', icon: '🧠', title: '/image futuristic AI workspace', desc: '4K futuristic AI workspace dashboard with neon glowing accents', action: () => executeImageGeneration('futuristic AI workspace') },
+  { id: 'img-cursor', group: 'Visual Engine (/image)', icon: '💻', title: '/image cursor ide editor', desc: 'Advanced AI coding interface similar to Cursor IDE', action: () => executeImageGeneration('cursor') },
+  { id: 'img-logo', group: 'Visual Engine (/image)', icon: '✨', title: '/image logo brand', desc: 'Minimal futuristic logo with neural network & star fusion', action: () => executeImageGeneration('logo') },
+  { id: 'img-chat', group: 'Visual Engine (/image)', icon: '💬', title: '/image chat interface', desc: 'Premium AI chat interface with action buttons & streaming', action: () => executeImageGeneration('chat') },
+  { id: 'img-dashboard', group: 'Visual Engine (/image)', icon: '📊', title: '/image project dashboard', desc: 'Modern SaaS project dashboard with analytics graphs', action: () => executeImageGeneration('dashboard') },
+  { id: 'img-command', group: 'Visual Engine (/image)', icon: '⚡', title: '/image command bar', desc: 'Floating command palette UI with dark blurred background', action: () => executeImageGeneration('command') },
+  { id: 'img-tools', group: 'Visual Engine (/image)', icon: '🛠️', title: '/image ai tools grid', desc: 'Grid of AI tools with neon gradient borders and glassmorphism', action: () => executeImageGeneration('tools') },
+  { id: 'img-landing', group: 'Visual Engine (/image)', icon: '🚀', title: '/image landing page hero', desc: 'Futuristic SaaS landing page hero with 3D glowing icon', action: () => executeImageGeneration('landing') },
+
+  // Navigation
+  { id: 'nav-editor', group: 'Navigation', icon: '💻', title: 'Open Cursor IDE', desc: 'Switch to live code editor and Copilot coding workspace', action: () => switchTab('editor') },
+  { id: 'nav-chat', group: 'Navigation', icon: '💬', title: 'Open Chat OS', desc: 'Return to conversational intelligence workspace', action: () => switchTab('chat') },
+  { id: 'nav-studio', group: 'Navigation', icon: '⚡', title: 'Open Auto SaaS Studio', desc: 'Generate rapid micro-SaaS blueprints and timelines', action: () => switchTab('studio') },
+  { id: 'nav-dash', group: 'Navigation', icon: '📊', title: 'Open Projects & AI Tools', desc: 'View live SaaS portfolios and telemetry metrics', action: () => switchTab('dashboard') },
+
+  // Modes & Levels
+  { id: 'mode-problem', group: 'Modes & Levels', icon: '⚙️', title: 'Switch to Problem-Solving Mode', desc: 'Enforces structured Overview, Plan, Code, and Tips', action: () => setMode('problem-solving') },
+  { id: 'mode-tech', group: 'Modes & Levels', icon: '🚀', title: 'Switch to Tech Assist Mode', desc: 'Clean, working code with zero unnecessary theory', action: () => setMode('tech-assist') },
+  { id: 'mode-biz', group: 'Modes & Levels', icon: '💡', title: 'Switch to Business Mode', desc: 'Unit economics, validation, and SaaS monetization', action: () => setMode('business') },
+  { id: 'level-adv', group: 'Modes & Levels', icon: '🎯', title: 'Set Depth to Advanced', desc: 'High-depth architectural execution and edge cases', action: () => setLevel('advanced') },
+  { id: 'action-clear', group: 'Actions', icon: '🗑️', title: 'Clear Conversation', desc: 'Start a fresh chat discussion', action: () => { createNewChatSession(); renderChatsList(); renderActiveChat(); showToast('Started new discussion'); } }
+];
+
+function openCommandPalette() {
+  commandPaletteModal.style.display = 'flex';
+  cmdPaletteInput.value = '';
+  currentSelectedCmdIndex = 0;
+  renderCommandPaletteResults('');
+  setTimeout(() => cmdPaletteInput.focus(), 50);
+}
+
+function closeCommandPalette() {
+  commandPaletteModal.style.display = 'none';
+}
+
+function renderCommandPaletteResults(query = '') {
+  const cleanQ = query.trim().toLowerCase();
+
+  filteredCommands = COMMAND_ITEMS.filter(item => {
+    if (!cleanQ) return true;
+    return item.title.toLowerCase().includes(cleanQ) || item.desc.toLowerCase().includes(cleanQ) || item.group.toLowerCase().includes(cleanQ);
+  });
+
+  if (filteredCommands.length === 0) {
+    // If user typed a custom image prompt
+    if (cleanQ.startsWith('/image') || cleanQ.includes('image')) {
+      filteredCommands = [
+        {
+          id: 'custom-image',
+          group: 'Visual Engine',
+          icon: '🎨',
+          title: `/image ${query.replace(/^\/image\s*/, '')}`,
+          desc: 'Generate custom 4K image with PRO prompt expansion',
+          action: () => executeImageGeneration(query.replace(/^\/image\s*/, ''))
+        }
+      ];
+    } else {
+      cmdPaletteResults.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:0.85rem;">No matching commands found. Type <code>/image &lt;prompt&gt;</code> to create visual assets.</div>`;
+      return;
+    }
+  }
+
+  // Group items by category
+  const groups = {};
+  filteredCommands.forEach((cmd, idx) => {
+    if (!groups[cmd.group]) groups[cmd.group] = [];
+    groups[cmd.group].push({ ...cmd, originalIdx: idx });
+  });
+
+  let html = '';
+  let globalCounter = 0;
+
+  for (const [groupName, items] of Object.entries(groups)) {
+    html += `<div class="cmd-group-label">${groupName}</div>`;
+    items.forEach(item => {
+      const isSelected = globalCounter === currentSelectedCmdIndex;
+      html += `
+        <div class="cmd-result-item ${isSelected ? 'selected' : ''}" data-idx="${item.originalIdx}">
+          <div class="cmd-item-left">
+            <span class="cmd-item-icon">${item.icon}</span>
+            <div class="cmd-item-info">
+              <span class="cmd-item-title">${escapeHtml(item.title)}</span>
+              <span class="cmd-item-desc">${escapeHtml(item.desc)}</span>
+            </div>
+          </div>
+          <span class="cmd-item-badge">Select ↵</span>
+        </div>
+      `;
+      globalCounter++;
+    });
+  }
+
+  cmdPaletteResults.innerHTML = html;
+
+  // Add click listeners to items
+  cmdPaletteResults.querySelectorAll('.cmd-result-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const idx = parseInt(el.dataset.idx, 10);
+      executeCommandByIndex(idx);
+    });
+  });
+}
+
+function executeCommandByIndex(index) {
+  const cmd = filteredCommands[index];
+  if (cmd && cmd.action) {
+    closeCommandPalette();
+    cmd.action();
+  }
+}
+
+// ==========================================
+// 💻 10. Cursor IDE Logic & Copilot Panel
+// ==========================================
+function initCursorIDE() {
+  loadFileIntoEditor(activeIdeFile);
+
+  // File tree switching
+  document.querySelectorAll('#ideFileTree .ide-file-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('#ideFileTree .ide-file-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      const file = item.dataset.file;
+      loadFileIntoEditor(file);
+    });
+  });
+
+  // Editor line numbering & keystroke handler
+  ideCodeEditor.addEventListener('input', () => {
+    updateLineNumbers();
+    IDE_FILES[activeIdeFile] = ideCodeEditor.value;
+  });
+
+  ideCodeEditor.addEventListener('selectionchange', updateCursorPosition);
+  ideCodeEditor.addEventListener('keyup', updateCursorPosition);
+  ideCodeEditor.addEventListener('click', updateCursorPosition);
+
+  // Run Button Simulation
+  ideRunBtn.addEventListener('click', () => {
+    ideTerminalOutput.innerHTML = `
+      <span class="term-accent">⚙️ Compiling ${activeIdeFile}...</span><br>
+      <span class="term-dim">[Webpack 5 / Vite Engine] Parsing AST & type definitions...</span><br>
+      <span class="term-success">✔ Build completed in 84ms!</span><br>
+      <span class="term-dim">Running runtime test suite: 6 passed, 0 failed.</span><br>
+      <span class="term-success">🚀 Service online and healthy at http://localhost:3000</span>
+    `;
+    showToast('Code build & run simulated successfully!');
+  });
+
+  // Format Code Simulation
+  ideFormatBtn.addEventListener('click', () => {
+    try {
+      const lines = ideCodeEditor.value.split('\n');
+      const formatted = lines.map(l => l.trimRight()).join('\n');
+      ideCodeEditor.value = formatted;
+      IDE_FILES[activeIdeFile] = formatted;
+      showToast('Code formatted with Prettier rules');
+    } catch (e) {}
+  });
+
+  // Copy Code Button
+  ideCopyCodeBtn.addEventListener('click', () => {
+    navigator.clipboard.writeText(ideCodeEditor.value);
+    showToast(`Copied ${activeIdeFile} to clipboard`);
+  });
+
+  // Clear Terminal Output
+  clearTerminalBtn.addEventListener('click', () => {
+    ideTerminalOutput.innerHTML = `<span class="term-dim">[Klyro IDE] Terminal cleared. Ready.</span>`;
+  });
+
+  // Copilot Quick Action Buttons
+  copilotRefactorBtn.addEventListener('click', () => {
+    handleCopilotAction('Refactor Code for Peak Performance');
+  });
+
+  copilotExplainBtn.addEventListener('click', () => {
+    handleCopilotAction('Explain Code Architecture');
+  });
+
+  copilotDebugBtn.addEventListener('click', () => {
+    handleCopilotAction('Debug & Check Edge Cases');
+  });
+
+  copilotTypesBtn.addEventListener('click', () => {
+    handleCopilotAction('Add Type Safety & Validation');
+  });
+
+  // Copilot Chat Input
+  copilotSendBtn.addEventListener('click', handleCopilotSubmit);
+  copilotInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') handleCopilotSubmit();
+  });
+}
+
+function loadFileIntoEditor(fileName) {
+  activeIdeFile = fileName;
+  ideTabTitle.textContent = fileName;
+  const content = IDE_FILES[fileName] || '// Empty file';
+  ideCodeEditor.value = content;
+  updateLineNumbers();
+
+  const langMap = {
+    'App.jsx': 'JavaScript (React)',
+    'auth.js': 'JavaScript (Node.js)',
+    'engine.js': 'JavaScript (ESM)',
+    'schema.sql': 'PostgreSQL SQL',
+    'styles.css': 'CSS3 Modules'
+  };
+  ideStatusLang.textContent = langMap[fileName] || 'Plain Text';
+}
+
+function loadCodeIntoIDE(codeSnippet) {
+  IDE_FILES['App.jsx'] = codeSnippet;
+  loadFileIntoEditor('App.jsx');
+  document.querySelectorAll('#ideFileTree .ide-file-item').forEach(i => {
+    i.classList.toggle('active', i.dataset.file === 'App.jsx');
+  });
+}
+
+function updateLineNumbers() {
+  const lineCount = (ideCodeEditor.value.split('\n').length) || 1;
+  let nums = '';
+  for (let i = 1; i <= lineCount; i++) {
+    nums += i + '<br>';
+  }
+  ideLineNumbers.innerHTML = nums;
+}
+
+function updateCursorPosition() {
+  const text = ideCodeEditor.value.substring(0, ideCodeEditor.selectionStart);
+  const lines = text.split('\n');
+  const lineNum = lines.length;
+  const colNum = lines[lines.length - 1].length + 1;
+  ideStatusCursor.textContent = `Ln ${lineNum}, Col ${colNum}`;
+}
+
+function handleCopilotAction(actionType) {
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'copilot-msg user';
+  msgDiv.innerHTML = `
+    <div class="copilot-msg-header"><span>You</span><span class="time">Now</span></div>
+    <p>${actionType} on <code>${activeIdeFile}</code></p>
+  `;
+  copilotChatHistory.appendChild(msgDiv);
+
+  // Simulated Copilot AI Response
+  setTimeout(() => {
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'copilot-msg assistant';
+
+    if (actionType.includes('Refactor')) {
+      const optimized = `// Refactored with memoization and clean async error boundaries\n` + ideCodeEditor.value;
+      ideCodeEditor.value = optimized;
+      IDE_FILES[activeIdeFile] = optimized;
+      updateLineNumbers();
+
+      aiDiv.innerHTML = `
+        <div class="copilot-msg-header"><span>Copilot</span><span class="time">Just now</span></div>
+        <p>✔ Refactored <code>${activeIdeFile}</code> for reduced bundle size and defensive error handling. Applied updates directly to editor.</p>
+      `;
+    } else if (actionType.includes('Explain')) {
+      aiDiv.innerHTML = `
+        <div class="copilot-msg-header"><span>Copilot</span><span class="time">Just now</span></div>
+        <p><strong>Architecture Overview</strong>: <code>${activeIdeFile}</code> implements modular separation of concerns. It handles inputs gracefully and connects directly to the Unica AI pipeline with sub-millisecond response latency.</p>
+      `;
+    } else if (actionType.includes('Debug')) {
+      aiDiv.innerHTML = `
+        <div class="copilot-msg-header"><span>Copilot</span><span class="time">Just now</span></div>
+        <p>✔ Scanned <code>${activeIdeFile}</code> AST: 0 memory leaks, strict boundary validation passed. Safe for production deployment.</p>
+      `;
+    } else {
+      aiDiv.innerHTML = `
+        <div class="copilot-msg-header"><span>Copilot</span><span class="time">Just now</span></div>
+        <p>✔ Applied schema validation and type guards to parameters in <code>${activeIdeFile}</code>.</p>
+      `;
+    }
+
+    copilotChatHistory.appendChild(aiDiv);
+    copilotChatHistory.scrollTop = copilotChatHistory.scrollHeight;
+  }, 400);
+}
+
+function handleCopilotSubmit() {
+  const val = copilotInput.value.trim();
+  if (!val) return;
+  copilotInput.value = '';
+
+  const userDiv = document.createElement('div');
+  userDiv.className = 'copilot-msg user';
+  userDiv.innerHTML = `
+    <div class="copilot-msg-header"><span>You</span><span class="time">Now</span></div>
+    <p>${escapeHtml(val)}</p>
+  `;
+  copilotChatHistory.appendChild(userDiv);
+
+  setTimeout(() => {
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'copilot-msg assistant';
+    aiDiv.innerHTML = `
+      <div class="copilot-msg-header"><span>Copilot</span><span class="time">Just now</span></div>
+      <p>Understood. I analyzed your request <em>"${escapeHtml(val)}"</em> and verified compatibility with <code>${activeIdeFile}</code>.</p>
+    `;
+    copilotChatHistory.appendChild(aiDiv);
+    copilotChatHistory.scrollTop = copilotChatHistory.scrollHeight;
+  }, 450);
+}
+
+// ==========================================
+// 🖼️ 11. Lightbox Modal & Image Downloads
+// ==========================================
+function openImageLightbox({ src, title, prompt }) {
+  lightboxImg.src = src;
+  lightboxTitle.textContent = title || 'Klyro AI Visual';
+  lightboxPromptText.textContent = prompt || '';
+  lightboxDownloadBtn.onclick = () => downloadImageUrl(src, 'klyro-ai-visual.jpg');
+  lightboxCopyPromptBtn.onclick = () => {
+    navigator.clipboard.writeText(prompt);
+    showToast('Copied PRO Prompt!');
+  };
+  imageLightboxModal.style.display = 'flex';
+}
+
+function closeImageLightbox() {
+  imageLightboxModal.style.display = 'none';
+}
+
+function downloadImageUrl(url, filename) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.target = '_blank';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast('Initiating download...');
+}
+
+// ==========================================
+// 12. File Attachment & Drag & Drop
 // ==========================================
 function handleFileSelect(file) {
   if (!file) return;
@@ -547,7 +1431,7 @@ function clearAttachedFile() {
 }
 
 // ==========================================
-// 8. Voice Dictation (Speech Recognition)
+// 13. Voice Dictation (Speech Recognition)
 // ==========================================
 function toggleVoiceInput() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -598,10 +1482,10 @@ function toggleVoiceInput() {
 }
 
 // ==========================================
-// 9. OS Switcher Tabs & Auto SaaS Generator
+// 14. OS Switcher Tabs & Navigation
 // ==========================================
 function switchTab(tab) {
-  [tabBtnChat, tabBtnStudio, tabBtnMemory].forEach(b => {
+  [tabBtnChat, tabBtnEditor, tabBtnStudio, tabBtnDashboard, tabBtnMemory].forEach(b => {
     if (b) b.classList.toggle('active', b.dataset.tab === tab);
   });
 
@@ -609,20 +1493,25 @@ function switchTab(tab) {
     b.classList.toggle('active', b.dataset.tab === tab);
   });
 
+  // Hide all view containers
+  chatContainer.style.display = 'none';
+  inputAreaContainer.style.display = 'none';
+  cursorIdeView.style.display = 'none';
+  saasStudioView.style.display = 'none';
+  projectsToolsView.style.display = 'none';
+  memoryView.style.display = 'none';
+
   if (tab === 'chat') {
     chatContainer.style.display = 'flex';
     inputAreaContainer.style.display = 'block';
-    saasStudioView.style.display = 'none';
-    memoryView.style.display = 'none';
+  } else if (tab === 'editor') {
+    cursorIdeView.style.display = 'flex';
+    updateLineNumbers();
   } else if (tab === 'studio') {
-    chatContainer.style.display = 'none';
-    inputAreaContainer.style.display = 'none';
     saasStudioView.style.display = 'flex';
-    memoryView.style.display = 'none';
+  } else if (tab === 'dashboard') {
+    projectsToolsView.style.display = 'block';
   } else if (tab === 'memory') {
-    chatContainer.style.display = 'none';
-    inputAreaContainer.style.display = 'none';
-    saasStudioView.style.display = 'none';
     memoryView.style.display = 'flex';
   }
 }
@@ -651,11 +1540,11 @@ function handleGenerateSaas() {
     generateSaasBtn.disabled = false;
     generateSaasBtn.textContent = 'Blueprint Ready! 🚀';
     showToast('SaaS MVP Blueprint generated!');
-  }, 900);
+  }, 850);
 }
 
 // ==========================================
-// 10. Event Listeners Setup
+// 15. Event Listeners Setup
 // ==========================================
 function initEventListeners() {
   // Submit Form
@@ -685,6 +1574,13 @@ function initEventListeners() {
     if (e.key === 'Escape') {
       closeSlashMenu();
     }
+  });
+
+  // Quick /image button beside prompt input
+  quickImagePromptBtn.addEventListener('click', () => {
+    promptInput.value = '/image futuristic AI workspace';
+    promptInput.focus();
+    showToast('Hit Enter to generate 4K futuristic AI workspace!');
   });
 
   // Slash Menu item click
@@ -812,7 +1708,9 @@ function initEventListeners() {
 
   // OS Switcher Tabs (Desktop)
   tabBtnChat.addEventListener('click', () => switchTab('chat'));
+  tabBtnEditor.addEventListener('click', () => switchTab('editor'));
   tabBtnStudio.addEventListener('click', () => switchTab('studio'));
+  tabBtnDashboard.addEventListener('click', () => switchTab('dashboard'));
   tabBtnMemory.addEventListener('click', () => switchTab('memory'));
 
   // Auto SaaS Studio Button
@@ -820,10 +1718,89 @@ function initEventListeners() {
   saasNicheInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') handleGenerateSaas();
   });
+
+  // Global Command Palette Shortcut: Cmd+K / Ctrl+K
+  window.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (commandPaletteModal.style.display === 'none') {
+        openCommandPalette();
+      } else {
+        closeCommandPalette();
+      }
+    }
+  });
+
+  topbarCmdTrigger.addEventListener('click', openCommandPalette);
+  sidebarCmdTrigger.addEventListener('click', openCommandPalette);
+  closeCmdPaletteBtn.addEventListener('click', closeCommandPalette);
+
+  // Command palette backdrop click
+  commandPaletteModal.addEventListener('click', (e) => {
+    if (e.target === commandPaletteModal) closeCommandPalette();
+  });
+
+  // Command Palette Input & Arrow Key Navigation
+  cmdPaletteInput.addEventListener('input', () => {
+    currentSelectedCmdIndex = 0;
+    renderCommandPaletteResults(cmdPaletteInput.value);
+  });
+
+  cmdPaletteInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeCommandPalette();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (filteredCommands.length > 0) {
+        currentSelectedCmdIndex = (currentSelectedCmdIndex + 1) % filteredCommands.length;
+        renderCommandPaletteResults(cmdPaletteInput.value);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (filteredCommands.length > 0) {
+        currentSelectedCmdIndex = (currentSelectedCmdIndex - 1 + filteredCommands.length) % filteredCommands.length;
+        renderCommandPaletteResults(cmdPaletteInput.value);
+      }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      executeCommandByIndex(currentSelectedCmdIndex);
+    }
+  });
+
+  // Lightbox close listeners
+  closeLightboxBtn.addEventListener('click', closeImageLightbox);
+  imageLightboxModal.addEventListener('click', (e) => {
+    if (e.target === imageLightboxModal) closeImageLightbox();
+  });
+
+  // AI Tools Grid click listeners
+  document.querySelectorAll('.tool-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const action = card.dataset.action;
+      if (action === 'app-generator') {
+        switchTab('studio');
+      } else if (action === 'code-debugger') {
+        switchTab('editor');
+        handleCopilotAction('Debug & Check Edge Cases');
+      } else if (action === 'api-builder') {
+        switchTab('chat');
+        setMode('tech-assist');
+        promptInput.value = 'Generate an authenticated, rate-limited Express REST API with input validation: ';
+        promptInput.focus();
+      } else if (action === 'ui-generator') {
+        switchTab('chat');
+        promptInput.value = 'Create a dark glassmorphic UI component with neon blue accents and responsive grid: ';
+        promptInput.focus();
+      } else if (action === 'visual-studio') {
+        switchTab('chat');
+        executeImageGeneration('futuristic AI workspace');
+      }
+    });
+  });
 }
 
 // ==========================================
-// Initialization
+// 16. Initialization
 // ==========================================
 function init() {
   initSpotlight();
@@ -837,6 +1814,7 @@ function init() {
   renderActiveChat();
   setMode('general');
   setLevel('intermediate');
+  initCursorIDE();
   initEventListeners();
 }
 
