@@ -1922,34 +1922,9 @@ body {
   /* ==========================================================================
      CHATGPT MOBILE PHONE THEME (MATCHING SCREENSHOT 1 & SCREENSHOT 2)
      ========================================================================== */
-  html, body {
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
+  body, .app-layout, .main-content {
     background: #ffffff !important;
     color: #0f172a !important;
-  }
-
-  .app-layout {
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
-    background: #ffffff !important;
-    color: #0f172a !important;
-  }
-
-  .main-content {
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
-    background: #ffffff !important;
-    color: #0f172a !important;
-  }
-
-  /* Disable heavy desktop mesh & spotlight in mobile light mode */
-  .ambient-mesh,
-  .app-layout::before {
-    display: none !important;
   }
 
   /* --------------------------------------------------------------------------
@@ -2015,15 +1990,12 @@ body {
     display: none !important;
   }
 
-  .sidebar-header .drawer-app-title,
-  .brand-text .drawer-app-title {
-    font-size: 1.65rem !important;
-    font-weight: 700 !important;
-    color: #0f172a !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    letter-spacing: -0.02em !important;
-    display: block !important;
-    line-height: 1.2 !important;
+  .drawer-app-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #0f172a;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    letter-spacing: -0.02em;
   }
 
   .drawer-search-circle-btn {
@@ -2471,31 +2443,6 @@ body {
     padding: 2px 6px;
     background: #f4f4f5;
     border-radius: 4px;
-    color: #2563eb;
-  }
-
-  .stream-footer-actions,
-  .message-footer-actions {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    gap: 6px;
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid #f4f4f5;
-    max-width: 100%;
-  }
-
-  .msg-action-pill {
-    background: #f4f4f5;
-    border: 1px solid rgba(0, 0, 0, 0.06);
-    color: #0f172a;
-    font-size: 0.76rem;
-    border-radius: 8px;
-  }
-
-  .msg-action-pill.primary {
-    background: #eff6ff;
-    border-color: rgba(37, 99, 235, 0.2);
     color: #2563eb;
   }
 
@@ -3446,7 +3393,6 @@ body {
   box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 229, 255, 0.08);
 }
 
-.stream-footer-actions,
 .message-footer-actions {
   display: flex;
   flex-wrap: wrap;
@@ -3454,7 +3400,6 @@ body {
   margin-top: 14px;
   padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  max-width: 100%;
 }
 
 .msg-action-pill {
