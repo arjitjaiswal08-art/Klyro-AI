@@ -46,6 +46,33 @@
             </svg>
           </div>
           <div class="brand-text">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+              <defs>
+                <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00e5ff" />
+                  <stop offset="50%" stop-color="#8b5cf6" />
+                  <stop offset="100%" stop-color="#ec4899" />
+                </linearGradient>
+                <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="2.5" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+              <path d="M24 2L29.5 16.5L44 19L33 29L36 44L24 36L12 44L15 29L4 19L18.5 16.5L24 2Z" stroke="url(#brandGrad)" stroke-width="2.5" stroke-linejoin="round" fill="rgba(0,229,255,0.12)" filter="url(#neonGlow)"/>
+              <circle cx="24" cy="24" r="4" fill="url(#brandGrad)"/>
+              <circle cx="24" cy="9" r="2.2" fill="#00e5ff"/>
+              <circle cx="39" cy="24" r="2.2" fill="#ec4899"/>
+              <circle cx="24" cy="39" r="2.2" fill="#8b5cf6"/>
+              <circle cx="9" cy="24" r="2.2" fill="#00e5ff"/>
+              <line x1="24" y1="9" x2="24" y2="20" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <line x1="24" y1="28" x2="24" y2="39" stroke="#8b5cf6" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <line x1="9" y1="24" x2="20" y2="24" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="2 2"/>
+              <line x1="28" y1="24" x2="39" y2="24" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="2 2"/>
+            </svg>
+          </div>
+          <div class="brand-text">
             <h2>Klyro AI</h2>
             <span class="brand-tagline">AI Workspace & Cursor Engine</span>
           </div>
@@ -70,7 +97,7 @@
       <button class="sidebar-cmd-trigger" id="sidebarCmdTrigger">
         <div class="sidebar-cmd-left">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>
-          <span>Command Bar</span>
+          <span>Command Palette</span>
         </div>
         <kbd class="kbd-badge">⌘K</kbd>
       </button>
@@ -125,7 +152,7 @@
         <div class="recent-chats-group">
           <div class="chats-section-header">
             <label class="section-label">RECENT DISCUSSIONS</label>
-            <button class="text-btn" id="clearAllChatsBtn">Clear All</button>
+            <button class="ghost-clean-btn" id="clearAllChatsBtn" title="Clear all conversation history">Clear All</button>
           </div>
           <div id="chatsList"></div>
         </div>
@@ -172,15 +199,24 @@
 
     <!-- Main Workspace -->
     <main class="main-content">
-      <!-- Top Navbar with OS Tabs -->
+      <!-- Clean Balanced 3-Section Topbar -->
       <header class="topbar">
+        <!-- Topbar Left: Mobile trigger & Context breadcrumb -->
         <div class="topbar-left">
           <button class="icon-btn mobile-menu-btn" id="openSidebarBtn" title="Toggle Sidebar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
+          <div class="topbar-breadcrumb">
+            <span class="crumb-spark">✦</span>
+            <span class="crumb-brand">Klyro</span>
+            <span class="crumb-slash">/</span>
+            <span class="crumb-current" id="activeChatTitle">Chat OS</span>
+          </div>
+        </div>
 
-          <!-- OS Tabs Navigator (Desktop) -->
-          <div class="os-tabs-nav">
+        <!-- Topbar Center: Clean OS Tabs Segmented Pill -->
+        <div class="topbar-center">
+          <nav class="os-tabs-nav">
             <button class="os-tab-btn active" data-tab="chat" id="tabBtnChat">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
               <span>Chat OS</span>
@@ -191,116 +227,138 @@
             </button>
             <button class="os-tab-btn" data-tab="studio" id="tabBtnStudio">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-              <span>Auto SaaS Studio</span>
+              <span>Auto SaaS</span>
             </button>
             <button class="os-tab-btn" data-tab="dashboard" id="tabBtnDashboard">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-              <span>Projects & Tools</span>
+              <span>Projects</span>
             </button>
             <button class="os-tab-btn" data-tab="memory" id="tabBtnMemory">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              <span>Saved Memory</span>
+              <span>Memory</span>
             </button>
-          </div>
-
-          <div class="chat-meta">
-            <span class="chat-title" id="activeChatTitle">New Discussion</span>
-          </div>
+          </nav>
         </div>
 
-        <!-- Topbar Center: Floating Quick Command Bar Button -->
-        <div class="topbar-command-trigger" id="topbarCmdTrigger" title="Open Floating Command Bar (⌘K)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <span class="cmd-trigger-text">Create a SaaS app, debug, /image...</span>
-          <kbd class="kbd-badge">⌘K</kbd>
-        </div>
-
-        <!-- Mobile Minimal Brand Center (ChatGPT / Perplexity Style) -->
-        <div class="mobile-nav-center" id="mobileNavCenter">
-          <span class="mobile-nav-spark">✦</span>
-          <span class="mobile-nav-brand">Klyro AI</span>
-          <span class="mobile-nav-badge">3.5</span>
-        </div>
-
+        <!-- Topbar Right: Sleek Search Pill & Depth Control -->
         <div class="topbar-right">
-          <!-- Adaptive Level Selector (Desktop) -->
+          <!-- Sleek Compact Command Search Pill -->
+          <button class="topbar-cmd-btn" id="topbarCmdTrigger" title="Quick Search & Actions (⌘K)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <span class="cmd-btn-text">Search</span>
+            <kbd class="kbd-badge">⌘K</kbd>
+          </button>
+
+          <!-- Adaptive Depth Level Selector -->
           <div class="level-control" title="Choose response depth (Unica AI adaptive intelligence)">
-            <span class="level-label">Depth:</span>
             <div class="level-buttons">
-              <button class="level-btn" data-level="beginner" id="btnLevelBeginner">
-                <span class="dot dot-green"></span> Beginner
+              <button class="level-btn" data-level="beginner" id="btnLevelBeginner" title="Beginner: simple explanations">
+                <span class="dot dot-green"></span> Beg
               </button>
-              <button class="level-btn active" data-level="intermediate" id="btnLevelIntermediate">
-                <span class="dot dot-yellow"></span> Intermediate
+              <button class="level-btn active" data-level="intermediate" id="btnLevelIntermediate" title="Intermediate: structured engineering">
+                <span class="dot dot-yellow"></span> Med
               </button>
-              <button class="level-btn" data-level="advanced" id="btnLevelAdvanced">
-                <span class="dot dot-purple"></span> Advanced
+              <button class="level-btn" data-level="advanced" id="btnLevelAdvanced" title="Advanced: production architectural depth">
+                <span class="dot dot-purple"></span> Adv
               </button>
             </div>
           </div>
 
-          <!-- Mobile New Chat Button (ChatGPT / Perplexity Style) -->
+          <!-- Mobile New Chat Button -->
           <button class="icon-btn mobile-new-chat-btn" id="mobileNewChatBtn" title="New Chat">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
               <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
           </button>
-
-          <!-- Hidden Settings Trigger -->
-          <button class="icon-btn" id="topbarSettingsBtn" style="display: none;"></button>
         </div>
       </header>
 
       <!-- View 1: Main Chat OS Container -->
       <div class="chat-container" id="chatContainer">
-        <!-- Empty State Hero -->
+        <!-- Empty State Hero: Super Cool & Cybernetic -->
         <div class="welcome-hero" id="welcomeHero">
-          <div class="hero-pill">
-            <span class="pulse-core"></span>
-            <span>Klyro AI • Powered by Unica Engine</span>
+          <div class="hero-badge-glow">
+            <span class="pulse-indicator"></span>
+            <span class="badge-text">Klyro AI 3.5 • Unica Neural Engine</span>
+            <span class="badge-chip">ONLINE</span>
           </div>
-          <h1 class="hero-title">What are we building today?</h1>
+
+          <h1 class="hero-title">
+            What are we <span class="shimmer-gradient-text">building today?</span>
+          </h1>
+
           <p class="hero-subtitle">
             An intelligent AI Operating System designed for live problem solving, production code engineering, and scalable SaaS generation.
           </p>
 
+          <div class="hero-tags-row">
+            <span class="hero-tag">⚡ Gemini 3.5 Ultra</span>
+            <span class="hero-tag">💻 Cursor IDE</span>
+            <span class="hero-tag">🎨 4K Flux Engine</span>
+            <span class="hero-tag">🚀 Auto SaaS Studio</span>
+          </div>
+
           <!-- Alive Hover Action Cards -->
           <div class="starter-cards">
-            <button class="starter-card" data-prompt="/image futuristic AI workspace" data-mode="problem-solving">
+            <button class="starter-card card-visual" data-prompt="/image futuristic AI workspace" data-mode="problem-solving">
               <div class="starter-header">
-                <span class="card-icon">🧠</span>
-                <span class="card-badge">Visual Engine</span>
+                <div class="starter-icon-box pink">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                </div>
+                <span class="card-badge pink">Visual Engine</span>
               </div>
               <h4>Futuristic AI Workspace</h4>
               <p>Generate 4K ultra-modern glassmorphic UI visual & PRO prompt.</p>
+              <div class="card-footer-action">
+                <span>Generate 4K Visual</span>
+                <span class="card-arrow">→</span>
+              </div>
             </button>
 
-            <button class="starter-card" data-prompt="How to build an AI SaaS application from scratch?" data-mode="problem-solving">
+            <button class="starter-card card-problem" data-prompt="How to build an AI SaaS application from scratch?" data-mode="problem-solving">
               <div class="starter-header">
-                <span class="card-icon">⚙️</span>
-                <span class="card-badge">Problem-Solving</span>
+                <div class="starter-icon-box cyan">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                </div>
+                <span class="card-badge cyan">Problem-Solving</span>
               </div>
               <h4>Build an AI SaaS</h4>
               <p>Step-by-step architecture, tech stack, database schema, and modular MVP plan.</p>
+              <div class="card-footer-action">
+                <span>Start Architecture</span>
+                <span class="card-arrow">→</span>
+              </div>
             </button>
 
-            <button class="starter-card" data-prompt="Write a production Node.js Express rate limiting and authentication middleware" data-mode="tech-assist">
+            <button class="starter-card card-code" data-prompt="Write a production Node.js Express rate limiting and authentication middleware" data-mode="tech-assist">
               <div class="starter-header">
-                <span class="card-icon">🚀</span>
-                <span class="card-badge">Tech Assist</span>
+                <div class="starter-icon-box violet">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                </div>
+                <span class="card-badge violet">Tech Assist</span>
               </div>
               <h4>Production Auth Middleware</h4>
               <p>Clean, tested Node.js/Express implementation with zero fluff.</p>
+              <div class="card-footer-action">
+                <span>Inspect Code</span>
+                <span class="card-arrow">→</span>
+              </div>
             </button>
 
-            <button class="starter-card" data-prompt="Give me 3 profitable micro-SaaS ideas with high margins for 2026" data-mode="business">
+            <button class="starter-card card-biz" data-prompt="Give me 3 profitable micro-SaaS ideas with high margins for 2026" data-mode="business">
               <div class="starter-header">
-                <span class="card-icon">💡</span>
-                <span class="card-badge">Business & Startup</span>
+                <div class="starter-icon-box gold">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                </div>
+                <span class="card-badge gold">Business & Startup</span>
               </div>
               <h4>High-Margin SaaS Ideas</h4>
               <p>Practical validation plans, distribution channels, and unit economics.</p>
+              <div class="card-footer-action">
+                <span>Explore Ventures</span>
+                <span class="card-arrow">→</span>
+              </div>
             </button>
           </div>
         </div>
