@@ -290,6 +290,8 @@ let isRecordingVoice = false;
 let speechRecognizer = null;
 let currentSelectedCmdIndex = 0;
 let filteredCommands = [];
+let currentTab = 'chat';
+const navHistory = [];
 
 // ==========================================
 // DOM Element Selectors
@@ -303,6 +305,8 @@ const promptForm = document.getElementById('promptForm');
 const promptInput = document.getElementById('promptInput');
 const sendBtn = document.getElementById('sendBtn');
 const activeChatTitle = document.getElementById('activeChatTitle');
+const topbarBackBtn = document.getElementById('topbarBackBtn');
+const crumbBrandBtn = document.getElementById('crumbBrandBtn');
 const chatsList = document.getElementById('chatsList');
 const pinnedChatsList = document.getElementById('pinnedChatsList');
 const pinnedChatsSection = document.getElementById('pinnedChatsSection');
@@ -430,6 +434,7 @@ function createNewChatSession() {
   chats.unshift(newChat);
   activeChatId = newChat.id;
   saveChatsToStorage();
+  updateBackButtonState();
   return activeChatId;
 }
 
@@ -527,6 +532,7 @@ function renderActiveChat() {
     });
     scrollToBottom();
   }
+  updateBackButtonState();
 }
 
 // ==========================================
@@ -990,10 +996,15 @@ async function handleUserSubmit() {
   }
 }
 
-function switchChatSession(id) {
+function switchChatSession(id, recordHistory = true) {
+  if (recordHistory && activeChatId && activeChatId !== id) {
+    navHistory.push({ type: 'chat', value: activeChatId });
+    if (navHistory.length > 30) navHistory.shift();
+  }
   activeChatId = id;
   renderChatsList();
   renderActiveChat();
+  updateBackButtonState();
 }
 
 function deleteChatSession(id) {
@@ -1482,9 +1493,90 @@ function toggleVoiceInput() {
 }
 
 // ==========================================
-// 14. OS Switcher Tabs & Navigation
+// 14. OS Switcher Tabs & Back Navigation
 // ==========================================
-function switchTab(tab) {
+function updateBackButtonState() {
+  if (!topbarBackBtn) return;
+  const activeChat = getActiveChat();
+  const hasChatMessages = activeChat && activeChat.messages && activeChat.messages.length > 0;
+  const isNotInChat = currentTab !== 'chat';
+  const hasHistory = navHistory.length > 0;
+
+  if (hasHistory || isNotInChat || hasChatMessages) {
+    topbarBackBtn.classList.add('has-history');
+    if (isNotInChat) {
+      topbarBackBtn.title = 'Back to Chat OS (Esc or Alt+←)';
+    } else if (hasChatMessages) {
+      topbarBackBtn.title = 'Back to New Discussion (Esc or Alt+←)';
+    } else {
+      topbarBackBtn.title = 'Go Back (Esc or Alt+←)';
+    }
+  } else {
+    topbarBackBtn.classList.remove('has-history');
+    topbarBackBtn.title = 'Return to New Discussion / Home';
+  }
+}
+
+function handleGoBack() {
+  // Tactile press micro-interaction
+  if (topbarBackBtn) {
+    topbarBackBtn.style.transform = 'scale(0.93) translateX(-3px)';
+    setTimeout(() => {
+      topbarBackBtn.style.transform = '';
+    }, 150);
+  }
+
+  // 1. If we have recorded history in our navigation stack, pop and restore
+  while (navHistory.length > 0) {
+    const item = navHistory.pop();
+    if (item.type === 'tab' && item.value !== currentTab) {
+      switchTab(item.value, false);
+      showToast(`Returned to ${item.value === 'chat' ? 'Chat OS' : item.value.toUpperCase()}`);
+      return;
+    }
+    if (item.type === 'chat' && item.value !== activeChatId) {
+      const exists = chats.find(c => c.id === item.value);
+      if (exists) {
+        switchChatSession(item.value, false);
+        showToast(`Back to "${exists.title}"`);
+        return;
+      }
+    }
+  }
+
+  // 2. If in a non-chat tab, return to chat OS
+  if (currentTab !== 'chat') {
+    switchTab('chat', false);
+    showToast('Back to Chat OS');
+    return;
+  }
+
+  // 3. If in an existing discussion with messages, return to fresh new discussion / welcome hero
+  const activeChat = getActiveChat();
+  if (activeChat && activeChat.messages && activeChat.messages.length > 0) {
+    createNewChatSession();
+    renderChatsList();
+    renderActiveChat();
+    updateBackButtonState();
+    showToast('Returned to New Discussion');
+    return;
+  }
+
+  // 4. Browser history fallback
+  if (window.history.length > 1) {
+    window.history.back();
+  } else {
+    showToast('At the beginning of workspace');
+  }
+}
+
+function switchTab(tab, recordHistory = true) {
+  if (recordHistory && currentTab && currentTab !== tab) {
+    navHistory.push({ type: 'tab', value: currentTab });
+    if (navHistory.length > 30) navHistory.shift();
+  }
+  currentTab = tab;
+
   [tabBtnChat, tabBtnEditor, tabBtnStudio, tabBtnDashboard, tabBtnMemory].forEach(b => {
     if (b) b.classList.toggle('active', b.dataset.tab === tab);
   });
@@ -1514,6 +1606,8 @@ function switchTab(tab) {
   } else if (tab === 'memory') {
     memoryView.style.display = 'flex';
   }
+
+  updateBackButtonState();
 }
 
 function handleGenerateSaas() {
@@ -1713,6 +1807,64 @@ function initEventListeners() {
   tabBtnDashboard.addEventListener('click', () => switchTab('dashboard'));
   tabBtnMemory.addEventListener('click', () => switchTab('memory'));
 
+  // Upgraded Back Button & Breadcrumbs Navigation
+  if (topbarBackBtn) {
+    topbarBackBtn.addEventListener('click', handleGoBack);
+  }
+
+  if (crumbBrandBtn) {
+    crumbBrandBtn.addEventListener('click', () => {
+      if (currentTab !== 'chat') {
+        switchTab('chat');
+      } else {
+        createNewChatSession();
+        renderChatsList();
+        renderActiveChat();
+        updateBackButtonState();
+        showToast('Started new discussion');
+      }
+    });
+  }
+
+  // View Return / Back Buttons inside SaaS, Projects, Memory, and IDE
+  document.querySelectorAll('.view-back-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.return || 'chat';
+      switchTab(target);
+    });
+  });
+
+  // Global Keyboard Shortcuts for Back Navigation: Esc and Alt+ArrowLeft
+  window.addEventListener('keydown', (e) => {
+    // Alt + Left Arrow for Back Navigation
+    if (e.altKey && e.key === 'ArrowLeft') {
+      e.preventDefault();
+      handleGoBack();
+      return;
+    }
+
+    // Escape for Back Navigation (when no modals or populated inputs)
+    if (e.key === 'Escape') {
+      const isCmdOpen = commandPaletteModal && commandPaletteModal.style.display !== 'none';
+      const isLightboxOpen = imageLightboxModal && imageLightboxModal.style.display !== 'none';
+      const isSettingsOpen = settingsModal && settingsModal.style.display !== 'none';
+      const isSlashOpen = slashMenu && slashMenu.style.display !== 'none';
+
+      if (isCmdOpen || isLightboxOpen || isSettingsOpen || isSlashOpen) {
+        return; // Handled by respective modal close listeners
+      }
+
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+        if (document.activeElement.value && document.activeElement.value.trim() !== '') {
+          return; // Don't interrupt user typing
+        }
+        document.activeElement.blur();
+      }
+
+      handleGoBack();
+    }
+  });
+
   // Auto SaaS Studio Button
   generateSaasBtn.addEventListener('click', handleGenerateSaas);
   saasNicheInput.addEventListener('keydown', (e) => {
@@ -1816,6 +1968,7 @@ function init() {
   setLevel('intermediate');
   initCursorIDE();
   initEventListeners();
+  updateBackButtonState();
 }
 
 if (document.readyState === 'loading') {

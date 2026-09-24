@@ -141,9 +141,20 @@
           <button class="icon-btn mobile-menu-btn" id="openSidebarBtn" title="Toggle Sidebar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
+
+          <!-- Upgraded Intelligent Back Button -->
+          <button class="topbar-back-btn" id="topbarBackBtn" title="Go back to Home / Previous View (Esc or Alt+←)" aria-label="Go Back">
+            <svg class="back-arrow-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span class="back-label">Back</span>
+            <kbd class="back-kbd-badge">Esc</kbd>
+          </button>
+
           <div class="topbar-breadcrumb">
             <span class="crumb-spark">✦</span>
-            <span class="crumb-brand">Klyro</span>
+            <span class="crumb-brand" id="crumbBrandBtn" title="Return to New Discussion / Home">Klyro</span>
             <span class="crumb-slash">/</span>
             <span class="crumb-current" id="activeChatTitle">Chat OS</span>
           </div>
@@ -310,6 +321,10 @@
           <!-- IDE File Tree Sidebar -->
           <div class="ide-sidebar">
             <div class="ide-sidebar-header">
+              <button class="ide-back-btn view-back-btn" data-return="chat" title="Back to Chat OS">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                <span>Back</span>
+              </button>
               <span class="ide-sidebar-title">EXPLORER: KLYRO-CORE</span>
               <button class="icon-btn-sm" id="ideNewFileBtn" title="New File">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -447,6 +462,12 @@
 
       <!-- View 3: Auto SaaS Studio (Flagship WOW Feature) -->
       <div class="studio-container" id="saasStudioView" style="display: none;">
+        <div class="studio-top-nav">
+          <button class="view-back-btn" data-return="chat" title="Back to Chat OS">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span>Back to Chat OS</span>
+          </button>
+        </div>
         <div class="studio-hero">
           <h2 class="studio-title">⚡ Auto SaaS Generator</h2>
           <p class="studio-subtitle">Enter any niche, audience, or problem to generate an entire MVP blueprint with pitch, revenue model, tech stack, and ready-to-run code.</p>
@@ -489,6 +510,12 @@
 
       <!-- View 4: Projects Dashboard & AI Tools Grid -->
       <div class="studio-container" id="projectsToolsView" style="display: none;">
+        <div class="studio-top-nav">
+          <button class="view-back-btn" data-return="chat" title="Back to Chat OS">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span>Back to Chat OS</span>
+          </button>
+        </div>
         <div class="studio-hero">
           <h2 class="studio-title">📊 Projects & AI Tools Grid</h2>
           <p class="studio-subtitle">All-in-one suite for deploying scalable SaaS architectures, monitoring micro-apps, and generating UI assets.</p>
@@ -672,6 +699,12 @@
 
       <!-- View 5: Saved Memory & Context -->
       <div class="studio-container" id="memoryView" style="display: none;">
+        <div class="studio-top-nav">
+          <button class="view-back-btn" data-return="chat" title="Back to Chat OS">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            <span>Back to Chat OS</span>
+          </button>
+        </div>
         <div class="studio-hero">
           <h2 class="studio-title">🧬 Saved Memory & Context</h2>
           <p class="studio-subtitle">Your persistent project memory, saved technical guidelines, and active workspace preferences.</p>
