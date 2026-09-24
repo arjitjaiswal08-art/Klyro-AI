@@ -434,6 +434,10 @@ function createNewChatSession() {
   chats.unshift(newChat);
   activeChatId = newChat.id;
   saveChatsToStorage();
+  const mobileActiveTitle = document.getElementById('mobileActiveTitle');
+  if (mobileActiveTitle) {
+    mobileActiveTitle.textContent = 'Klyro AI';
+  }
   updateBackButtonState();
   return activeChatId;
 }
@@ -519,7 +523,13 @@ function renderActiveChat() {
   const chat = getActiveChat();
   if (!chat) return;
 
-  activeChatTitle.textContent = chat.title || 'New Discussion';
+  const title = chat.title || 'New Discussion';
+  activeChatTitle.textContent = title;
+
+  const mobileActiveTitle = document.getElementById('mobileActiveTitle');
+  if (mobileActiveTitle) {
+    mobileActiveTitle.textContent = chat.messages.length === 0 ? 'Klyro AI' : title;
+  }
 
   if (chat.messages.length === 0) {
     welcomeHero.style.display = 'flex';
@@ -1518,6 +1528,12 @@ function updateBackButtonState() {
 }
 
 function handleGoBack() {
+  // If sidebar is open on mobile, tapping back closes the sidebar drawer
+  if (sidebar && sidebar.classList.contains('open')) {
+    sidebar.classList.remove('open');
+    return;
+  }
+
   // Tactile press micro-interaction
   if (topbarBackBtn) {
     topbarBackBtn.style.transform = 'scale(0.93) translateX(-3px)';
@@ -1811,6 +1827,43 @@ function initEventListeners() {
   if (topbarBackBtn) {
     topbarBackBtn.addEventListener('click', handleGoBack);
   }
+
+  // Mobile ChatGPT-style Centered Pill click (opens quick command palette / switcher)
+  const mobileCenterPill = document.getElementById('mobileCenterPill');
+  if (mobileCenterPill) {
+    mobileCenterPill.addEventListener('click', openCommandPalette);
+  }
+
+  // Native Touch Edge-Swipe Navigation (ChatGPT Mobile Style)
+  let touchStartX = 0;
+  let touchStartY = 0;
+  let touchStartTime = 0;
+
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 1) return;
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+    touchStartTime = Date.now();
+  }, { passive: true });
+
+  window.addEventListener('touchend', (e) => {
+    if (!e.changedTouches || e.changedTouches.length !== 1) return;
+    const deltaX = e.changedTouches[0].clientX - touchStartX;
+    const deltaY = e.changedTouches[0].clientY - touchStartY;
+    const deltaTime = Date.now() - touchStartTime;
+
+    // Horizontal swipe detection
+    if (Math.abs(deltaX) > Math.abs(deltaY) * 1.5 && deltaTime < 350) {
+      // Swiping right from left edge (< 48px) opens sidebar drawer
+      if (touchStartX < 48 && deltaX > 50 && !sidebar.classList.contains('open')) {
+        sidebar.classList.add('open');
+      }
+      // Swiping left when sidebar is open closes it
+      else if (sidebar.classList.contains('open') && deltaX < -50) {
+        sidebar.classList.remove('open');
+      }
+    }
+  }, { passive: true });
 
   if (crumbBrandBtn) {
     crumbBrandBtn.addEventListener('click', () => {

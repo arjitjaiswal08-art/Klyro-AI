@@ -807,6 +807,10 @@ body {
   min-width: 0;
 }
 
+.mobile-center-pill {
+  display: none;
+}
+
 /* OS Switcher Tabs */
 .os-tabs-nav {
   display: flex;
@@ -1920,17 +1924,98 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: rgba(8, 12, 21, 0.88);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(8, 12, 21, 0.94);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     position: sticky;
     top: 0;
-    z-index: 40;
+    z-index: 100;
+    gap: 8px;
   }
 
   .topbar-left {
     flex: 0 0 auto;
-    gap: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  /* Completely hide the bulky desktop breadcrumb on mobile */
+  .topbar-breadcrumb {
+    display: none !important;
+  }
+
+  /* Mobile Upgraded ChatGPT-Style Back Button */
+  .topbar-back-btn {
+    display: inline-flex !important;
+    align-items: center;
+    height: 36px;
+    padding: 0 12px 0 10px;
+    gap: 5px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px; /* ChatGPT pill */
+    color: #e2e8f0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .topbar-back-btn:active {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(0.92) translateX(-2px);
+    border-color: rgba(0, 229, 255, 0.4);
+  }
+
+  .topbar-back-btn .back-arrow-icon {
+    width: 15px;
+    height: 15px;
+    stroke-width: 2.5;
+  }
+
+  .topbar-back-btn .back-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .topbar-back-btn .back-kbd-badge {
+    display: none !important; /* Touch screens don't have physical Esc */
+  }
+
+  /* Vibrant active state on mobile when history exists or inside discussion */
+  .topbar-back-btn.has-history {
+    background: rgba(0, 229, 255, 0.12);
+    border-color: rgba(0, 229, 255, 0.35);
+    color: #ffffff;
+    box-shadow: 0 0 14px rgba(0, 229, 255, 0.22);
+  }
+
+  .topbar-back-btn.has-history .back-arrow-icon {
+    color: #00e5ff;
+  }
+
+  /* Mobile Sidebar Drawer Trigger */
+  .mobile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.18s ease;
+  }
+
+  .mobile-menu-btn:active {
+    background: rgba(255, 255, 255, 0.12);
+    transform: scale(0.92);
+    color: #ffffff;
   }
 
   /* Completely hide the bulky tabs & depth controls from the mobile header */
@@ -1940,42 +2025,70 @@ body {
     display: none !important;
   }
 
-  /* Center Brand (ChatGPT / Perplexity style) */
-  .mobile-nav-center {
+  /* Center: ChatGPT-Style Centered Pill */
+  .topbar-center {
+    flex: 1 1 auto;
     display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .mobile-center-pill {
+    display: inline-flex !important;
     align-items: center;
     gap: 6px;
-    user-select: none;
-  }
-
-  .mobile-nav-spark {
-    color: var(--accent-color);
-    font-size: 0.95rem;
-    filter: drop-shadow(0 0 6px var(--accent-glow));
-  }
-
-  .mobile-nav-brand {
-    font-weight: 700;
-    font-size: 0.98rem;
-    color: #ffffff;
-    letter-spacing: -0.01em;
-  }
-
-  .mobile-nav-badge {
-    font-size: 0.65rem;
-    font-weight: 600;
-    padding: 1px 7px;
+    padding: 5px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+    max-width: 170px;
+    transition: all 0.18s ease;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .mobile-center-pill:active {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(0.96);
+  }
+
+  .mobile-center-spark {
+    color: var(--accent-color);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .mobile-center-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #f1f5f9;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-center-chevron {
+    color: #64748b;
+    flex-shrink: 0;
   }
 
   .topbar-right {
     flex: 0 0 auto;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+  }
+
+  .topbar-cmd-btn {
+    display: none !important;
+  }
+
+  #topbarNewChatBtn {
+    display: none !important;
   }
 
   /* 1-Tap Mobile New Chat Button */
@@ -2403,11 +2516,41 @@ body {
 @media (max-width: 480px) {
   /* Extra polish for ultra-compact mobile screens <= 480px */
   .topbar {
-    padding: 0 10px;
+    padding: 0 8px;
+    gap: 4px;
   }
 
-  .mobile-nav-brand {
-    font-size: 0.94rem;
+  .topbar-left {
+    gap: 4px;
+  }
+
+  .topbar-back-btn {
+    height: 34px;
+    padding: 0 10px 0 8px;
+    gap: 4px;
+  }
+
+  .topbar-back-btn .back-label {
+    font-size: 0.78rem;
+  }
+
+  .mobile-menu-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mobile-new-chat-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mobile-center-pill {
+    max-width: 130px;
+    padding: 4px 8px;
+  }
+
+  .mobile-center-title {
+    font-size: 0.78rem;
   }
 
   .chat-container {
